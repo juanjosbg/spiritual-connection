@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { QuoteSection } from "@/components/meditation/QuoteSection";
+import { QuoteSection } from "@/components/prube/QuoteSection";
 import { MeditationSection } from "@/components/MeditationSection";
 import { BreathingExercise } from "@/components/BreathingExercise";
 import { Card } from "@/components/ui/card";
@@ -9,7 +9,8 @@ import {
   fetchRelaxMusic,
   type RelaxTrack,
 } from "@/lib/meditation/fetchRelaxMusic";
-import MeditationScene from "@/components/meditation/MeditationScene";
+import MeditationScene from "@/components/prube/MeditationScene";
+import YogaApi from "@/pages/meditation";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState<
@@ -97,6 +98,7 @@ const Index = () => {
                     Sesiones de 5, 10 y 15 minutos para calmar tu mente y
                     conectar con tu interior.
                   </p>
+                  <YogaApi/>
                 </div>
               </Card>
 

@@ -5,10 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import Profile from "@/pages/Profile";
+import Register from "@/pages/Register";
+import NotFound from "./pages/NotFound";
+import Meditacion from "@/pages/meditation";
 import { Navbar } from "@/components/Navbar";
 
 const queryClient = new QueryClient();
@@ -29,9 +30,11 @@ function AppContent() {
 
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/meditation" element={<Meditacion />} />
+        <Route path="/not-found" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { DashBoard } from "@/components/dashboard/DashBoard";
 import { fetchZenQuotes } from "@/lib/meditation/fetchZenQuotes";
-import { MeditationPlayer } from "@/components/meditation/MeditationPlayer";
+import { MeditationPlayer } from "@/components/prube/MeditationPlayer";
 
 import { Quote as QuoteIcon,Thermometer,Heart} from "lucide-react";
 import { type MeditationVideo, fetchYouTubeMeditations} from "@/lib/meditation/fetchYouTubeMeditations";
