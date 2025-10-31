@@ -1,211 +1,232 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router-dom";
+"use client";
 
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/database/supabaseClient";
 import {
-  Activity as ActivityIcon,
-  FileText,
-  Download,
-  Briefcase,
-  Calendar,
-} from "lucide-react";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import {
+  ChevronDownIcon,
+  Squares2X2Icon,
+  FunnelIcon,
+} from "@heroicons/react/24/outline";
+import { Sparkles } from "lucide-react";
 
-type CVItem = {
-  id: string;
-  titulo: string;
-  updatedAt: string;
-  desc: string;
-};
-
-type ActivityItem = {
-  id: string;
-  fecha: string;
-  evento: string;
-  detalle: string;
-  icon?: React.ReactNode;
-};
-
-const cvs: CVItem[] = [
-  {
-    id: "cv-01",
-    titulo: "CV — Senior Web3 Dev",
-    updatedAt: "Actualizado hoy",
-    desc: "Enfocado en Solidity, Foundry y auditorías de contratos.",
-  },
-  {
-    id: "cv-02",
-    titulo: "CV — Full-Stack React",
-    updatedAt: "Actualizado hace 3 días",
-    desc: "React, Next.js, UI System y performance.",
-  },
-  {
-    id: "cv-03",
-    titulo: "CV — Product Engineer",
-    updatedAt: "Actualizado hace 2 semanas",
-    desc: "Entrega end-to-end, UX y data-informed features.",
-  },
+const sortOptions = [
+  { name: "Most Popular", href: "#", current: true },
+  { name: "Best Rating", href: "#", current: false },
+  { name: "Newest", href: "#", current: false },
+  { name: "Price: Low to High", href: "#", current: false },
+  { name: "Price: High to Low", href: "#", current: false },
 ];
 
-const actividad: ActivityItem[] = [
-  {
-    id: "a-01",
-    fecha: "Hoy • 10:21",
-    evento: "Aplicación enviada",
-    detalle: "UX Product Designer — ETHGlobal",
-    icon: <Briefcase className="h-4 w-4" />,
-  },
-  {
-    id: "a-02",
-    fecha: "Ayer • 18:02",
-    evento: "Entrevista agendada",
-    detalle: "Creator DAO — React Native",
-    icon: <Calendar className="h-4 w-4" />,
-  },
-  {
-    id: "a-03",
-    fecha: "Hace 3 días",
-    evento: "CV actualizado",
-    detalle: "CV — Senior Web3 Dev",
-    icon: <FileText className="h-4 w-4" />,
-  },
+const subCategories = [
+  { name: "Dashboard", href: "#" },
+  { name: "Operations", href: "#" },
+  { name: "My Wallet", href: "#" },
+  { name: "Stock Quotes", href: "#" },
 ];
 
-export default function Profile() {
-  const navigate = useNavigate();
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
-  const stats = {
-    cvsCreados: cvs.length,
-    aplicaciones: 12,
-    entrevistas: 4,
-  };
+export default function Dashboard() {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUserData();
+  }, []);
 
   return (
+    <div className="flex bg-[#F6F7FB] min-h-screen text-gray-800">
+      <aside className="w-64 bg-white flex flex-col border-r border-gray-200">
+        <div className="flex items-center gap-2 px-6 py-6 border-b border-gray-100">
+         <Card className="border-none shadow-none">
+            <div className="flex items-start gap-6">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 p-1">
+                <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600">
+                  {user?.user_metadata?.first_name
+                    ? user.user_metadata.first_name.charAt(0).toUpperCase()
+                    : "?"}
+                </div>
+              </div>
 
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <Card className="glass border-white/10 dark:border-none p-6 mb-6 bg-white dark:bg-[#0b0b0b]">
-          <div className="flex items-start gap-6">
-            <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary to-accent p-1">
-              <div className="h-full w-full rounded-full bg-card flex items-center justify-center text-3xl font-bold">
-                JD
+              <div className="flex-1 text-gray-900">
+                <h1 className="text-xl font-bold uppercase">
+                  {user?.user_metadata?.first_name &&
+                  user?.user_metadata?.last_name
+                    ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+                    : "Usuario sin nombre"}
+                </h1>
+                <p className="text-gray-600 mb-3 text-sm">
+                  {user?.email || "Correo no disponible"}
+                </p>
               </div>
             </div>
+          </Card>
+        </div>
 
-            <div className="flex-1 text-gray-900 dark:text-white">
-              <h1 className="text-3xl font-bold mb-2">John Doe</h1>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Web3 Developer & Blockchain Architect
-              </p>
+        <nav className="flex-1 px-4 py-6">
+          <ul className="space-y-2">
+            {subCategories.map((item) => (
+              <li
+                key={item.name}
+                className={classNames(
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                )}
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-              <div className="flex gap-2 flex-wrap">
-                <span className="px-3 py-1 rounded-full bg-primary/20 dark:bg-primary/70 text-sm">Solidity</span>
-                <span className="px-3 py-1 rounded-full bg-accent/20 dark:bg-primary/70 text-sm">React</span>
-                <span className="px-3 py-1 rounded-full bg-primary/20 dark:bg-primary/70 text-sm">Smart Contracts</span>
-              </div>
-            </div>
+        <div className="px-4 py-6">
+          <button className="w-full flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-white font-medium py-2 rounded-lg shadow-sm transition">
+            Add Funds
+          </button>
+        </div>
+      </aside>
+
+      {/* ===== MAIN CONTENT ===== */}
+      <main className="flex-1 p-10">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold">Electronic Arts</h1>
+            <p className="text-sm text-gray-500">
+              American video game company
+            </p>
           </div>
-        </Card>
 
-        {/* Métricos rápidos */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 ">
-          <Card className="bg-white dark:bg-[#0b0b0b] text-gray-900 dark:text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">CV creados</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="text-3xl font-semibold">{stats.cvsCreados}</div>
-              <FileText className="h-6 w-6 opacity-70" />
-            </CardContent>
-          </Card>
+          <div className="flex items-center gap-6">
+            <div className="bg-white rounded-xl px-6 py-3 shadow-sm">
+              <p className="text-sm text-gray-500">All Time Profit</p>
+              <p className="text-xl font-semibold text-yellow-500">
+                +73.36%
+              </p>
+            </div>
 
-          <Card className="bg-white dark:bg-[#0b0b0b] text-gray-900 dark:text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">Aplicaciones</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="text-3xl font-semibold">{stats.aplicaciones}</div>
-              <Briefcase className="h-6 w-6 opacity-70" />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-[#0b0b0b] text-gray-900 dark:text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-muted-foreground">Entrevistas</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="text-3xl font-semibold">{stats.entrevistas}</div>
-              <ActivityIcon className="h-6 w-6 opacity-70" />
-            </CardContent>
-          </Card>
+            <img
+              src={
+                user?.user_metadata?.avatar_url ||
+                "https://i.pravatar.cc/100?img=8"
+              }
+              alt="avatar"
+              className="w-10 h-10 rounded-full shadow-md"
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2 bg-white dark:bg-[#0b0b0b] text-gray-900 dark:text-white">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base">CVs creados</CardTitle>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="px-3 py-1 rounded-full bg-primary/20 dark:bg-primary/70 text-sm"
-                  onClick={() => navigate("/create-cv")}
-                >
-                  Nuevo CV
-                </Button>
+        {/* ===== Dashboard Cards Section ===== */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Chart Card */}
+          <Card className="bg-white rounded-2xl shadow-sm col-span-2">
+            <CardHeader className="flex items-center justify-between border-b border-gray-100">
+              <CardTitle>Electronic Arts</CardTitle>
+              <div className="flex items-center text-sm text-gray-500">
+                88.10 USD
+                <span className="text-emerald-500 ml-2 font-semibold">
+                  +5.23%
+                </span>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {cvs.map((cv) => (
-                <div
-                  key={cv.id}
-                  className="rounded-xl border p-4 hover:bg-muted/30 transitio"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium">{cv.titulo}</h3>
-                        <Badge variant="secondary" className="rounded-full bg-primary/40 dark:bg-primary/70 dark:text-white">
-                          {cv.updatedAt}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {cv.desc}
-                      </p>
-                    </div>
-                    <Button size="sm" className="rounded-xl" variant="secondary">
-                      <Download className="h-4 w-4 mr-2" />
-                      Descargar PDF
-                    </Button>
-                  </div>
-                </div>
-              ))}
+            <CardContent className="p-6">
+              <img
+                src=""
+                alt="chart"
+                className="rounded-xl w-full"
+              />
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-[#0b0b0b] text-gray-900 dark:text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Actividad</CardTitle>
+          {/* Watchlist */}
+          <Card className="bg-white rounded-2xl shadow-sm">
+            <CardHeader className="flex justify-between items-center border-b border-gray-100">
+              <CardTitle>Your Watchlist</CardTitle>
+              <a href="#" className="text-sm text-indigo-500">
+                View All
+              </a>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {actividad.map((item, idx) => (
-                <div key={item.id}>
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5">{item.icon}</div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{item.evento}</p>
-                      <p className="text-sm text-muted-foreground">{item.detalle}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{item.fecha}</p>
-                    </div>
-                  </div>
-                  {idx < actividad.length - 1 && <Separator className="my-3" />}
+            <CardContent className="p-6 space-y-4">
+              {[
+                { name: "Netflix", value: "+0.31%", color: "text-emerald-500" },
+                {
+                  name: "CD Projekt",
+                  value: "-1.65%",
+                  color: "text-red-500",
+                },
+                { name: "Square Enix", value: "+2.25%", color: "text-emerald-500" },
+                { name: "Apple", value: "+0.53%", color: "text-emerald-500" },
+              ].map((item) => (
+                <div key={item.name} className="flex justify-between items-center">
+                  <span>{item.name}</span>
+                  <span className={`font-semibold ${item.color}`}>
+                    {item.value}
+                  </span>
                 </div>
               ))}
             </CardContent>
           </Card>
         </div>
-      </div>
+
+        {/* ===== Similar Companies Section ===== */}
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold mb-4">Similar Companies</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { name: "Square Enix", value: "+2.25%" },
+              { name: "Ubisoft", value: "+1.75%" },
+              { name: "Nintendo", value: "+0.60%" },
+              { name: "Microsoft", value: "+1.26%" },
+            ].map((c) => (
+              <div
+                key={c.name}
+                className="bg-white p-4 rounded-xl text-center shadow-sm"
+              >
+                <p className="font-semibold">{c.name}</p>
+                <p className="text-sm text-emerald-500 mt-1">{c.value}</p>
+                <button className="text-xs text-indigo-500 mt-2">Compare</button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <Card className="bg-indigo-100 text-indigo-900 rounded-2xl shadow-none flex justify-between items-center p-6">
+            <div>
+              <h3 className="text-xl font-semibold mb-2">
+                Invest in green energy
+              </h3>
+              <p className="text-sm mb-4">Join the sustainability movement</p>
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm">
+                Invest now!
+              </button>
+            </div>
+            <img
+              src=""
+              alt="wind"
+              className="w-40"
+            />
+          </Card>
+        </section>
+      </main>
     </div>
   );
 }
