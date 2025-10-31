@@ -9,6 +9,7 @@ import {
   fetchRelaxMusic,
   type RelaxTrack,
 } from "@/lib/meditation/fetchRelaxMusic";
+import MeditationScene from "@/components/meditation/MeditationScene";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState<
@@ -23,7 +24,7 @@ const Index = () => {
   }, [activeSection]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b bg-[#e7eced] dark:bg-[#8ea2a8] text-gray-800 transition-colors duration-500">
+    <div className="relative min-h-screen overflow-hidden">
       <main className="container mx-auto px-4 py-10">
         {activeSection === "home" && (
           <div className="space-y-12 animate-fade-in">
@@ -54,17 +55,24 @@ const Index = () => {
 
                 <div className="grid md:grid-cols-3 gap-6">
                   {tracks.slice(0, 3).map((track) => (
-                    <Card key={track.id}
-                      className="p-4 sm:p-6 rounded-2xl bg-white/70 border border-white/50 backdrop-blur-xl hover:shadow-xl transition-all">
-
-                      <img src={track.image} alt={track.title}
+                    <Card
+                      key={track.id}
+                      className="p-4 sm:p-6 rounded-2xl bg-white/70 border border-white/50 backdrop-blur-xl hover:shadow-xl transition-all"
+                    >
+                      <img
+                        src={track.image}
+                        alt={track.title}
                         className="w-full h-40 object-cover rounded-xl mb-4 opacity-95 hover:opacity-100 transition-opacity"
                       />
                       <h4 className="text-lg font-medium text-gray-800">
                         {track.title}
                       </h4>
                       <p className="text-sm text-gray-600">{track.artist}</p>
-                      <audio controls src={track.audio} className="w-full mt-3"/>
+                      <audio
+                        controls
+                        src={track.audio}
+                        className="w-full mt-3"
+                      />
                     </Card>
                   ))}
                 </div>
@@ -74,9 +82,10 @@ const Index = () => {
             <section className="grid md:grid-cols-3 gap-6">
               <Card className="border-none"></Card>
 
-              <Card className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={() => setActiveSection("meditate")}>
-
+              <Card
+                className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
+                onClick={() => setActiveSection("meditate")}
+              >
                 <div className="space-y-4">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
                     <Sparkles className="w-6 h-6 text-indigo-400" />
@@ -91,9 +100,10 @@ const Index = () => {
                 </div>
               </Card>
 
-              <Card className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={() => setActiveSection("breathe")}>
-
+              <Card
+                className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
+                onClick={() => setActiveSection("breathe")}
+              >
                 <div className="space-y-4">
                   <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
                     <Wind className="w-6 h-6 text-sky-400" />
@@ -115,11 +125,7 @@ const Index = () => {
         {activeSection === "breathe" && <BreathingExercise />}
       </main>
 
-      <footer className="border-t border-gray-200 mt-20">
-        <div className="container mx-auto px-4 py-8 text-center text-gray-500">
-          <p>© 2025 MindBalance — Encuentra tu paz interior 🌙</p>
-        </div>
-      </footer>
+      <MeditationScene />
     </div>
   );
 };
