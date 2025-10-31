@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
-
+import Profile from "@/pages/Profile";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -21,6 +21,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="profile" element={<Profile/>}/>
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

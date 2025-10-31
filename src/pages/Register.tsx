@@ -42,10 +42,9 @@ export default function Register() {
       });
 
       if (error) throw error;
+      if (data.user) navigate("/profile");
 
-      setMessage(
-        "✅ Registro exitoso. Revisa tu correo para confirmar tu cuenta."
-      );
+      setMessage("✅ Registro exitoso. Revisa tu correo para confirmar tu cuenta.");
       setFirstName("");
       setLastName("");
       setEmail("");

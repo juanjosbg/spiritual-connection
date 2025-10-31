@@ -38,6 +38,15 @@
     --ring: 270 60% 75%;
 
     --radius: 1rem;
+    /* For Web */
+    --color-nav:#fffdf5;
+    --color-background:#f5f5f5;
+    --color-content:#ffffff;
+    --color-button:#fdb225;
+    --color-textHero:#14100b;
+    --color-textHeroSpan:#fdb21f;
+    --color-textNormal:#4a4a4a;
+    
 
     /* Gris */
     --gris1: #f6f7f9;
@@ -84,11 +93,6 @@
     --gradient-energy: linear-gradient(135deg, hsl(160 50% 80%), hsl(270 60% 85%));
     --gradient-warmth: linear-gradient(135deg, hsl(340 60% 85%), hsl(30 70% 85%));
 
-    /* Shadows */
-    --shadow-soft: 0 8px 24px -4px hsl(270 60% 75% / 0.2);
-    --shadow-glow: 0 0 40px hsl(270 70% 85% / 0.4);
-    --shadow-card: 0 4px 16px -2px hsl(270 40% 70% / 0.15);
-
     /* Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -134,10 +138,6 @@
     --gradient-calm: linear-gradient(180deg, hsl(260 30% 10%), hsl(260 25% 15%));
     --gradient-energy: linear-gradient(135deg, hsl(160 40% 40%), hsl(270 60% 45%));
     --gradient-warmth: linear-gradient(135deg, hsl(340 50% 50%), hsl(30 60% 50%));
-
-    --shadow-soft: 0 8px 24px -4px hsl(270 60% 20% / 0.5);
-    --shadow-glow: 0 0 40px hsl(270 70% 40% / 0.3);
-    --shadow-card: 0 4px 16px -2px hsl(260 40% 10% / 0.4);
   }
 }
 
@@ -149,19 +149,6 @@
 
   .float-animation {
     animation: float 6s ease-in-out infinite;
-  }
-
-  .glow-effect {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .card-hover {
-    @apply transition-all duration-300 hover:scale-105 hover:-translate-y-1;
-    box-shadow: var(--shadow-card);
-  }
-
-  .card-hover:hover {
-    box-shadow: var(--shadow-soft);
   }
 }
 

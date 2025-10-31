@@ -23,14 +23,7 @@ const Index = () => {
   }, [activeSection]);
 
   return (
-    <div
-      className="
-        min-h-screen
-        bg-gradient-to-b
-        from-rose-50 via-indigo-50 to-sky-50
-        dark:from-[#0f1220] dark:via-[#14182a] dark:to-[#0b1220]
-      "
-    >
+    <div className="min-h-screen bg-gradient-to-b  from-rose-50 via-indigo-50 to-sky-50 ">
       <Navbar
         activeSection={activeSection}
         setActiveSection={setActiveSection}
@@ -61,15 +54,15 @@ const Index = () => {
             {/* MÚSICA RELAJANTE */}
             {tracks.length > 0 && (
               
-              <section className="space-y-6 mt-6">
+              <section className="space-y-6 mt-6 ">
                 <div className="flex items-center justify-center gap-2">
-                  <Music className="w-6 h-6 text-indigo-400" />
-                  <h3 className="text-2xl font-light text-gray-800 dark:text-gray-100">
+                  <Music className="w-6 h-6 text-indigo-400 " />
+                  <h3 className="text-2xl font-light text-gray-800 dark:text-gray-100 ">
                     Sonidos para el alma
                   </h3>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-3 gap-6 ">
                   {tracks.slice(0, 3).map((track) => (
                     <Card
                       key={track.id}
@@ -77,7 +70,7 @@ const Index = () => {
                         p-4 sm:p-6 rounded-2xl
                         bg-white/55 dark:bg-white/[0.06]
                         border border-white/50 dark:border-white/10
-                        backdrop-blur-xl shadow-lg hover:shadow-xl transition-all
+                        backdrop-blur-xl hover:shadow-xl transition-all
                       "
                     >
                       <img

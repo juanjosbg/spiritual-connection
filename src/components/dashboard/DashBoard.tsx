@@ -95,7 +95,7 @@ export const DashBoard = () => {
           <p className="text-3xl font-semibold text-indigo-500 dark:text-indigo-400 pt-5">
             {activeDays}/7
           </p>
-          <p className="text-lg  font-light text-gray-800">Esta semana</p>
+          <p className="text-lg font-light text-gray-800">Esta semana</p>
         </div>
 
         <div className="text-center space-y-2">
