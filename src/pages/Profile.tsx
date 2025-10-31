@@ -1,23 +1,10 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/database/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import {
-  ChevronDownIcon,
-  Squares2X2Icon,
-  FunnelIcon,
-} from "@heroicons/react/24/outline";
-import { Sparkles } from "lucide-react";
-
-const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
-];
+import SimilarCompaniesCarousel from "@/components/Profile/SimilarCompaniesCarousel";
 
 const subCategories = [
   { name: "Dashboard", href: "#" },
@@ -173,27 +160,17 @@ export default function Dashboard() {
 
           {/* Cards */}
           <section className="mt-10">
-            <h2 className="text-lg font-semibold mb-4">Similar Companies</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {[
+            <SimilarCompaniesCarousel
+              items={[
                 { name: "Square Enix", value: "+2.25%" },
                 { name: "Ubisoft", value: "+1.75%" },
                 { name: "Nintendo", value: "+0.60%" },
                 { name: "Microsoft", value: "+1.26%" },
-                { name: "Microsoft", value: "+1.26%" },
-              ].map((c) => (
-                <div
-                  key={c.name}
-                  className="bg-white/90 dark:bg-gray-800/70 p-4 rounded-xl text-center shadow-sm"
-                >
-                  <p className="font-semibold">{c.name}</p>
-                  <p className="text-sm text-emerald-500 mt-1">{c.value}</p>
-                  <button className="text-xs text-indigo-500 mt-2">
-                    Compare
-                  </button>
-                </div>
-              ))}
-            </div>
+                { name: "Sony", value: "+0.91%" },
+                { name: "EA", value: "-0.34%" },
+                { name: "Take-Two", value: "+0.73%" },
+              ]}
+            />
           </section>
 
           <section className="mt-10">

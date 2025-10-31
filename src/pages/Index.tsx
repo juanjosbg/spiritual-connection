@@ -25,7 +25,7 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-4 py-14">
         {activeSection === "home" && (
           <div className="space-y-12 animate-fade-in">
             <section className="relative px-6 md:px-10 py-12">
@@ -33,10 +33,10 @@ const Index = () => {
                 <div className="inline-block animate-float">
                   <Flower2 className="w-16 h-16 text-indigo-400 mx-auto mb-4" />
                 </div>
-                <h2 className="text-4xl md:text-5xl font-light tracking-wide text-gray-800 uppercase">
+                <h2 className="text-4xl md:text-5xl font-light tracking-wide dark:text-white uppercase">
                   Tu camino hacia el equilibrio
                 </h2>
-                <p className="mt-3 text-gray-600 text-lg">
+                <p className="mt-3 text-gray-600 dark:text-white text-lg">
                   Una experiencia para reconectar cuerpo, mente y espíritu 🌿
                 </p>
               </div>
