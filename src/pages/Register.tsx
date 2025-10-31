@@ -25,33 +25,64 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const fullName = `${firstName} ${lastName}`.trim();
+      console.log({
+        email,
+        password,
+        firstName,
+        lastName,
+        phone,
+        birthDate,
+      });
 
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            firstName,
-            lastName,
-            fullName,
-            phone,
-            birthDate,
+            first_name: firstName || "",
+            last_name: lastName || "",
+            phone: phone || "",
+            birth_date: birthDate || "",
           },
         },
       });
 
-      if (error) throw error;
-      if (data.user) navigate("/profile");
+      if (error) {
+        if (error.message.includes("User already registered")) {
+          throw new Error(
+            "Este correo ya está registrado. Intenta iniciar sesión."
+          );
+        }
+        throw error;
+      }
 
-      setMessage("✅ Registro exitoso. Revisa tu correo para confirmar tu cuenta.");
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
-      setBirthDate("");
-      setPhone("");
+      if (data.user) {
+        const { error: upsertError } = await supabase.from("users").upsert(
+          {
+            id: data.user.id,
+            email: data.user.email,
+            name: `${firstName} ${lastName}`,
+            first_name: firstName,
+            last_name: lastName,
+            phone,
+            birth_date: birthDate,
+            created_at: new Date(),
+          },
+          { onConflict: "id" }
+        );
+
+        if (upsertError) {
+          console.error("Error al guardar usuario:", upsertError.message);
+          throw upsertError;
+        }
+
+        setMessage(
+          "✅ Registro exitoso. Revisa tu correo para confirmar tu cuenta."
+        );
+        navigate("/profile");
+      }
     } catch (err: any) {
+      console.error(err);
       setMessage(`❌ Error: ${err.message}`);
     } finally {
       setLoading(false);
@@ -63,7 +94,7 @@ export default function Register() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/` }, 
+        options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
     } catch (err: any) {
@@ -79,7 +110,6 @@ export default function Register() {
         activeSection={activeSection}
         setActiveSection={setActiveSection}
       />
-
       <div className="flex flex-col items-center justify-center px-4 py-20">
         <div className="w-full max-w-md bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-8 border border-gray-200 dark:border-white/10">
           <div className="text-center mb-8">
