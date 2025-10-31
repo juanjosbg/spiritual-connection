@@ -50,14 +50,13 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
         "fixed top-0 z-50 w-full backdrop-blur-md transition-all duration-300 border-b border-transparent",
         scrolled
           ? theme === "dark"
-            ? "bg-[#2a2a2a]/80 border-[#3d3d3d]"
-            : "bg-[#f5f5f5]/80 border-gray-200"
+            ? "bg-[#f6f7f9]/90"
+            : "bg-[#111827]/90"
           : "bg-transparent border-transparent"
       )}
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
-          {/* Logo */}
           <div
             className="flex shrink-0 items-center gap-2 cursor-pointer"
             onClick={() => navigate("/")}
