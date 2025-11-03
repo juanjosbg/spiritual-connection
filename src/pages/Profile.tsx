@@ -35,10 +35,10 @@ export default function Dashboard() {
       <div className="flex min-h-screen mt-12">
         <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center gap-2 px-6 py-6 border-b border-gray-100 dark:border-gray-700">
-            <Card className="border-none shadow-none">
+            <Card className="border-none shadow-none bg-transparent">
               <div className="flex items-start gap-6">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 p-1">
-                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600 ">
+                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600">
                     {user?.user_metadata?.first_name
                       ? user.user_metadata.first_name.charAt(0).toUpperCase()
                       : "?"}
@@ -46,14 +46,13 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <h1 className="text-xl font-bold uppercase text-gray-900 dark:text-gray-200">
+                  <h1 className="text-xl font-bold uppercase text-gray-100">
                     {user?.user_metadata?.first_name
-                      ? `${user.user_metadata.first_name} ${
-                          user.user_metadata.last_name || ""
-                        }`
+                      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ""
+                      }`
                       : "Usuario sin nombre"}
                   </h1>
-                  <p className="mb-3 text-sm text-gray-200">
+                  <p className="mb-1 text-sm text-indigo-300">
                     {user?.email || "Correo no disponible"}
                   </p>
                 </div>

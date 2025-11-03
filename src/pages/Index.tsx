@@ -5,14 +5,11 @@ import { MeditationSection } from "@/components/MeditationSection";
 import { BreathingExercise } from "@/components/BreathingExercise";
 import { Card } from "@/components/ui/card";
 import { Sparkles, Wind, Flower2, Music } from "lucide-react";
-import {
-  fetchRelaxMusic,
-  type RelaxTrack,
-} from "@/lib/meditation/fetchRelaxMusic";
-import MeditationScene from "@/components/prube/MeditationScene";
-import YogaApi from "@/pages/meditation";
+import { fetchRelaxMusic, type RelaxTrack, } from "@/lib/meditation/music/fetchRelaxMusic";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<
     "home" | "meditate" | "breathe"
   >("home");
@@ -85,7 +82,7 @@ const Index = () => {
 
               <Card
                 className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={() => setActiveSection("meditate")}
+                onClick={() => navigate("/meditation")}
               >
                 <div className="space-y-4">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
@@ -95,10 +92,8 @@ const Index = () => {
                     Meditación Guiada
                   </h3>
                   <p className="text-gray-600">
-                    Sesiones de 5, 10 y 15 minutos para calmar tu mente y
-                    conectar con tu interior.
+                    Sesiones de 5, 10 y 15 minutos para calmar tu mente y conectar con tu interior.
                   </p>
-                  <YogaApi/>
                 </div>
               </Card>
 
@@ -126,8 +121,6 @@ const Index = () => {
         {activeSection === "meditate" && <MeditationSection />}
         {activeSection === "breathe" && <BreathingExercise />}
       </main>
-
-      <MeditationScene />
     </div>
   );
 };

@@ -29,8 +29,6 @@ Ayudar a las personas a recuperar su equilibrio interior (mente, cuerpo y energ�
 
 ---
 
-## new
-
 ## 🧩 Funcionalidades por Módulo
 
 ### 🔹 Fase 1 — Meditación y Respiración (Core del producto)

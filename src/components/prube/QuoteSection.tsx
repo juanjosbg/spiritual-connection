@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { DashBoard } from "@/components/dashboard/DashBoard";
-import { fetchZenQuotes } from "@/lib/meditation/fetchZenQuotes";
+import { fetchZenQuotes } from "@/lib/meditation/mensajes/fetchZenQuotes";
 import { MeditationPlayer } from "@/components/prube/MeditationPlayer";
 
 import { Quote as QuoteIcon,Thermometer,Heart} from "lucide-react";
-import { type MeditationVideo, fetchYouTubeMeditations} from "@/lib/meditation/fetchYouTubeMeditations";
-import type { Quote } from "@/lib/meditation/fetchZenQuotes";
+import { type MeditationVideo, fetchYouTubeMeditations} from "@/lib/meditation/video/fetchYouTubeMeditations";
+import type { Quote } from "@/lib/meditation/mensajes/fetchZenQuotes";
 
 export const QuoteSection = () => {
   const [quote, setQuote] = useState<Quote | null>(null);
