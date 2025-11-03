@@ -1,91 +1,75 @@
-// src/lib/meditation/fetchZenQuotes.ts
-
 export type Quote = {
   q: string;
-  a: string; 
-  s?: string; 
+  a: string;
+  s?: string;
+  tag?: string;
 };
 
-const CACHE_KEY = "mindbalance_daily_quote";
-const CACHE_TTL_MS = 1000 * 60 * 60 * 12;
+/**
+ * API base: https://api.quotable.io
+ * Documentación: https://github.com/lukePeavey/quotable
+ */
 
-function getCachedQuote(): Quote | null {
+const QUOTABLE_BASE = "https://api.quotable.io";
+
+async function fetchFromQuotableTag(tag: string): Promise<Quote | null> {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { quote: Quote; ts: number };
-    if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
-    return parsed.quote;
+    const res = await fetch(`${QUOTABLE_BASE}/random?tags=${encodeURIComponent(tag)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      q: data.content,
+      a: data.author || "Desconocido",
+      s: "Quotable",
+      tag,
+    };
   } catch {
     return null;
   }
 }
 
-function setCachedQuote(quote: Quote) {
+async function fetchFromZenQuotes(): Promise<Quote | null> {
   try {
-    localStorage.setItem(
-      CACHE_KEY,
-      JSON.stringify({ quote, ts: Date.now() })
-    );
-  } catch {}
+    const res = await fetch("https://zenquotes.io/api/random");
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || !data[0]) return null;
+    const first = data[0];
+    return { q: first.q, a: first.a, s: "ZenQuotes" };
+  } catch {
+    return null;
+  }
 }
 
-/** Llama ZenQuotes (sin API key). */
-async function fetchFromZenQuotes(signal?: AbortSignal): Promise<Quote | null> {
-  const res = await fetch("https://zenquotes.io/api/random", { signal });
-  if (!res.ok) return null;
-  const data = (await res.json()) as Array<{ q: string; a: string }>;
-  if (!Array.isArray(data) || data.length === 0) return null;
-  const first = data[0];
-  return { q: first.q, a: first.a, s: "ZenQuotes" };
-}
-
-/** Respaldo con Quotable (sin API key). */
-async function fetchFromQuotable(signal?: AbortSignal): Promise<Quote | null> {
-  const res = await fetch("https://api.quotable.io/random", { signal });
-  if (!res.ok) return null;
-  const data = (await res.json()) as { content?: string; author?: string };
-  if (!data?.content) return null;
-  return { q: data.content, a: data.author || "Unknown", s: "Quotable" };
-}
-
-/** Último recurso: frase local. */
 function fallbackLocal(): Quote {
-  return {
-    q: "Respira. Este momento es suficiente.",
-    a: "MindBalance",
-    s: "Local",
-  };
+  const frases = [
+    { q: "Cada respiración es una nueva oportunidad para empezar.", a: "MindBalance" },
+    { q: "Suelta lo que no puedes controlar, abraza lo que sí puedes disfrutar.", a: "MindBalance" },
+    { q: "La calma no se busca afuera, se cultiva dentro.", a: "MindBalance" },
+  ];
+  const random = frases[Math.floor(Math.random() * frases.length)];
+  return { ...random, s: "Local" };
 }
 
 /**
- * Obtiene una frase “del día”:
- * 1) intenta caché; 2) ZenQuotes; 3) Quotable; 4) fallback local.
+ * Obtiene una frase según categoría o aleatoria.
+ * @param tag Categoría de frase (por ejemplo 'inspirational', 'life', 'happiness')
+ * @param forceRefresh Forzar nueva petición (ignora caché)
  */
-export async function fetchZenQuotes(): Promise<Quote> {
-  const cached = getCachedQuote();
-  if (cached) return cached;
 
-  const controller = new AbortController();
-  const { signal } = controller;
+export async function fetchZenQuotes(tag?: string, forceRefresh = false): Promise<Quote> {
+  const tags = tag
+    ? [tag]
+    : ["inspirational", "life", "wisdom", "happiness", "success", "friendship"];
+  const randomTag = tags[Math.floor(Math.random() * tags.length)];
 
-  try {
-    const fromZen = await fetchFromZenQuotes(signal);
-    if (fromZen) {
-      setCachedQuote(fromZen);
-      return fromZen;
-    }
-  } catch {}
+  let quote: Quote | null = null;
 
-  try {
-    const fromQuotable = await fetchFromQuotable(signal);
-    if (fromQuotable) {
-      setCachedQuote(fromQuotable);
-      return fromQuotable;
-    }
-  } catch {}
+  quote = await fetchFromQuotableTag(randomTag);
+  if (quote) return quote;
 
-  const fb = fallbackLocal();
-  setCachedQuote(fb);
-  return fb;
+  quote = await fetchFromZenQuotes();
+  if (quote) return quote;
+
+  return fallbackLocal();
 }

@@ -79,7 +79,7 @@ const Index = () => {
 
             <section className="grid md:grid-cols-3 gap-6">
               <Card className="border-none"></Card>
-
+            
               <Card
                 className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
                 onClick={() => navigate("/meditation")}
