@@ -8,10 +8,10 @@ import { fetchAllPoses, type Pose } from "@/lib/meditation/yogaApi";
 import { PoseCard } from "@/components/meditation/PoseCard";
 
 const subCategories = [
-  { name: "Inicio", href: "#" },
   { name: "Mis rutinas", href: "#" },
   { name: "Música", href: "#" },
-  { name: "Frases Zen", href: "#" },
+  { name: "Retos", href: "#" },
+  { name: "Logros", href: "#" },
 ];
 
 function classNames(...classes: string[]) {
@@ -46,7 +46,6 @@ export default function MeditationPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Filtro dinámico
   useEffect(() => {
     let temp = poses;
     if (difficulty !== "All") {
@@ -74,8 +73,8 @@ export default function MeditationPage() {
         <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center gap-2 px-6 py-6">
             <Card className="border-none shadow-none bg-transparent">
-              <div className="flex items-start gap-6">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 p-1">
+              <div className="flex items-start gap-2">
+                <div className="h-10 w-10 rounded-full from-indigo-400 to-emerald-400 p-1">
                   <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600">
                     {user?.user_metadata?.first_name
                       ? user.user_metadata.first_name.charAt(0).toUpperCase()

@@ -8,6 +8,7 @@ import { Toaster as Sonner } from "./components/ui/sonner";
 
 import { Navbar } from "@/components/Navbar";
 import MeditationScene from "@/components/screensaver/MeditationScene";
+import PoseDetail from "@/pages/Meditation/PoseDetail"
 
 import Index from "./pages/Index";
 import Login from "@/pages/Login";
@@ -42,7 +43,7 @@ function AppContent() {
     window.addEventListener("click", resetTimer);
     window.addEventListener("scroll", resetTimer);
 
-    resetTimer(); 
+    resetTimer();
     return () => {
       clearTimeout(timer);
       window.removeEventListener("mousemove", resetTimer);
@@ -74,6 +75,9 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/meditation" element={<Meditacion />} />
+
+        <Route path="/meditation/pose/:id" element={<PoseDetail />} />
+        
         <Route path="/not-found" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
