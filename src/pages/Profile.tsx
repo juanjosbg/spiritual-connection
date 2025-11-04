@@ -18,10 +18,9 @@ const subCategories = [
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [level, setLevel] = useState<string>("Beginner");
-  const [xp, setXp] = useState<number>(45); // 🔹 XP actual del usuario
-  const [progress, setProgress] = useState<number>(0); // 🔹 Porcentaje visual de XP
+  const [xp, setXp] = useState<number>(5);
+  const [progress, setProgress] = useState<number>(0); 
 
-  // Obtener usuario de Supabase
   useEffect(() => {
     const getUserData = async () => {
       const {
@@ -29,7 +28,6 @@ export default function Dashboard() {
       } = await supabase.auth.getUser();
       setUser(user);
 
-      // Si tuvieras la tabla user_levels, aquí podrías obtener su nivel real
       if (user) {
         const { data } = await supabase
           .from("user_levels")
@@ -46,7 +44,6 @@ export default function Dashboard() {
     getUserData();
   }, []);
 
-  // Calcular el progreso (porcentaje visual)
   useEffect(() => {
     setProgress(Math.min((xp / 100) * 100, 100));
   }, [xp]);
@@ -57,7 +54,6 @@ export default function Dashboard() {
         <SidebarProfile user={user} subCategories={subCategories} />
 
         <main className="flex-1 pt-20 p-6 md:p-10 transition-all">
-          {/* Header principal */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-800 uppercase mb-1">
@@ -78,14 +74,11 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Grid principal */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Dashboard principal */}
             <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
               <DashBoard />
             </Card>
 
-            {/* 🔹 Sección Mi Progreso */}
             <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none">
               <CardHeader className="flex flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2">
@@ -105,7 +98,6 @@ export default function Dashboard() {
                     Experiencia acumulada
                   </p>
 
-                  {/* Barra de progreso */}
                   <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-1">
                     <div
                       className="h-2 bg-indigo-500 rounded-full transition-all duration-500"
@@ -113,13 +105,11 @@ export default function Dashboard() {
                     ></div>
                   </div>
 
-                  {/* XP numérico */}
                   <p className="text-xs mt-2 text-gray-900 font-medium">
                     {xp}/100 XP {progress === 100 && "🎉 Nivel completado"}
                   </p>
                 </div>
 
-                {/* Detalle visual o recompensas */}
                 <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-4">
                   <div>
                     <p className="font-medium text-indigo-400">
