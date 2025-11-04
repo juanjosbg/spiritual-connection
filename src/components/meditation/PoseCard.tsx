@@ -1,9 +1,12 @@
+"use client";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Pose } from "@/lib/meditation/yogaApi";
 import { AuthModal } from "@/components/ui/AuthModal";
+import { supabase } from "@/lib/database/supabaseClient";
 
 type Size = "sm" | "md";
+
 interface PoseCardProps {
   pose: Pose;
   size?: Size;
@@ -11,10 +14,19 @@ interface PoseCardProps {
 
 export function PoseCard({ pose, size = "md" }: PoseCardProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const isSm = size === "sm";
 
-  const isLoggedIn = false;
+  // ✅ Detectar si el usuario está logueado
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getUser();
+      setIsLoggedIn(!!data?.user);
+    };
+    checkSession();
+  }, []);
 
+  // ✅ Verificar antes de iniciar una pose
   const handleStart = (e: React.MouseEvent) => {
     if (!isLoggedIn) {
       e.preventDefault();
@@ -32,7 +44,10 @@ export function PoseCard({ pose, size = "md" }: PoseCardProps) {
         ].join(" ")}
       >
         <img
-          src={pose.url_png || "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?q=80&w=1200&auto=format&fit=crop"}
+          src={
+            pose.url_png ||
+            "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?q=80&w=1200&auto=format&fit=crop"
+          }
           alt={pose.english_name}
           className="w-full h-40 object-cover"
           loading="lazy"
@@ -57,7 +72,10 @@ export function PoseCard({ pose, size = "md" }: PoseCardProps) {
 
           <div className="flex justify-between items-center mt-4">
             <span className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">
-              {(pose.difficulty || "Beginner") + " • " + (pose.duration || "10")} min
+              {(pose.difficulty || "Beginner") +
+                " • " +
+                (pose.duration || "10") +
+                " min"}
             </span>
 
             <div className="flex gap-2">

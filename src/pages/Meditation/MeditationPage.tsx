@@ -34,7 +34,6 @@ export default function MeditationPage() {
     getUserData();
   }, []);
 
-  // 🧘 Obtener poses de yoga
   useEffect(() => {
     fetchAllPoses()
       .then((data) => {
@@ -44,7 +43,6 @@ export default function MeditationPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // 🧘 Aplicar filtros
   useEffect(() => {
     let temp = poses;
     if (difficulty !== "All") {
@@ -58,7 +56,6 @@ export default function MeditationPage() {
     setFiltered(temp);
   }, [difficulty, duration, poses]);
 
-  // 🕒 Cargando
   if (loading)
     return (
       <div className="p-10 text-center text-gray-400">
@@ -66,13 +63,9 @@ export default function MeditationPage() {
       </div>
     );
 
-  // 🔒 Usuario no logueado
   if (!user) return <MeditationEmptyState />;
-
-  // 🧩 Usuario logueado sin nivel
   if (!level) return <QuizMeditation userId={user.id} onComplete={setLevel} />;
 
-  // 🌿 Usuario logueado con nivel
   return (
     <div className="relative min-h-screen flex mt-12">
       <MeditationSidebar

@@ -16,7 +16,6 @@ export default function PoseDetail() {
       const poses = await fetchAllPoses();
       const found = poses.find((p) => p.id === Number(id));
       setPose(found || null);
-      // 🔹 Si la pose tiene videoId, úsalo; si no, usa uno por defecto
       setVideoId(found?.videoId || getVideoIdForPose(found?.english_name || "") || "v7AYKMP6rOE");
       setLoading(false);
     };
@@ -44,7 +43,6 @@ export default function PoseDetail() {
 
   return (
     <div className="min-h-screen mt-16 text-white px-6 md:px-20 py-12">
-      {/* 🔙 Botón volver */}
       <Link to="/meditation" className="text-indigo-300 hover:text-indigo-400 text-sm">
         ← Volver a las rutinas
       </Link>
