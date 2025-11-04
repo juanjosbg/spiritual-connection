@@ -15,7 +15,6 @@ import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
 
-// 🧘 Nuevo módulo de meditación
 import MeditationPage from "@/pages/Meditation/MeditationPage";
 import PoseDetail from "@/pages/Meditation/PoseDetail";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -23,9 +22,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const [activeSection, setActiveSection] = useState<
-    "home" | "meditate" | "breathe"
-  >("home");
+  const [activeSection, setActiveSection] = useState< "home" | "meditate" | "breathe" >("home");
 
   const location = useLocation();
   const hideNavbar = ["/login", "/register"].includes(location.pathname);

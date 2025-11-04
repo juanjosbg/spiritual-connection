@@ -26,8 +26,6 @@ export default function MeditationPage() {
   const [poses, setPoses] = useState<Pose[]>([]);
   const [filtered, setFiltered] = useState<Pose[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Filtros
   const [difficulty, setDifficulty] = useState("All");
   const [duration, setDuration] = useState("All");
 
@@ -81,7 +79,6 @@ export default function MeditationPage() {
       </div>
     );
 
-  // 🔒 Si no hay usuario, pedimos login o registro
   if (!user) {
     return (
       <div className="h-screen flex flex-col items-center justify-center text-center px-6">
@@ -109,16 +106,13 @@ export default function MeditationPage() {
     );
   }
 
-  // 🧘 Si el usuario está logueado pero no tiene nivel → mostrar quiz
   if (!level) {
     return <QuizMeditation userId={user.id} onComplete={setLevel} />;
   }
 
-  // 🧘 Si tiene nivel → mostrar rutinas normales (tu contenido original)
   return (
     <div className="relative min-h-screen">
       <div className="flex min-h-screen mt-12">
-        {/* Sidebar */}
         <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center gap-2 px-6 py-6">
             <Card className="border-none shadow-none bg-transparent">
@@ -146,7 +140,6 @@ export default function MeditationPage() {
             </Card>
           </div>
 
-          {/* Filtros */}
           <div className="flex flex-col gap-4 px-6 py-6">
             <h2 className="text-lg font-semibold text-indigo-300 flex items-center gap-2">
               <Filter className="w-4 h-4 text-indigo-400" /> Filtros
@@ -175,7 +168,6 @@ export default function MeditationPage() {
             </select>
           </div>
 
-          {/* Subcategorías */}
           <nav className="flex-1 px-4 py-6 border-t border-indigo-800/30">
             <ul className="space-y-2">
               {subCategories.map((item) => (

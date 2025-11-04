@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/database/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SimilarCompaniesCarousel from "@/components/Profile/SimilarCompaniesCarousel";
+import { Settings } from "lucide-react";
+import ProfileSettingsDrawer from "@/components/Profile/ProfileSettingsDrawer";
+import { DashBoard } from "@/components/dashboard/DashBoard";
 
 const subCategories = [
   { name: "Dashboard", href: "#" },
@@ -19,6 +22,7 @@ function classNames(...classes: string[]) {
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -33,34 +37,49 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       <div className="flex min-h-screen mt-12">
-        <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
-          <div className="flex items-center gap-2 px-6 py-6 border-b border-gray-100 dark:border-gray-700">
+        <aside className="hidden md:flex w-[38vh] flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
+          <div className="flex items-center gap-4 px-6 py-6 border-b border-gray-100 dark:border-gray-700 relative">
             <Card className="border-none shadow-none bg-transparent">
-              <div className="flex items-start gap-6">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 p-1">
-                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600">
-                    {user?.user_metadata?.first_name
-                      ? user.user_metadata.first_name.charAt(0).toUpperCase()
-                      : "?"}
+              <div className="flex items-center gap-4">
+                <div className="relative shrink-0">
+                  <div className="p-0.5 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500">
+                    <img src={ user?.user_metadata?.avatar_url || "/avatars/avatar1.png"}
+                      alt="avatar"
+                      className="block w-20 h-20 rounded-full object-cover bg-gray-100 p-1
+                       ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent"
+                    />
                   </div>
+
+                  <button
+                    onClick={() => setSettingsOpen(true)}
+                    className="absolute -bottom-1 right-1 bg-indigo-600 p-1.5 rounded-full
+                     text-white hover:bg-indigo-700 transition shadow-sm"
+                    title="Editar perfil"
+                  >
+                    <Settings size={14} />
+                  </button>
                 </div>
 
-                <div>
-                  <h1 className="text-xl font-bold uppercase text-gray-100">
-                    {user?.user_metadata?.first_name
-                      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ""
-                      }`
-                      : "Usuario sin nombre"}
+                <div className="text-left">
+                  <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {user?.user_metadata?.first_name || "Usuario sin nombre"}
                   </h1>
-                  <p className="mb-1 text-sm text-indigo-300">
+                  <p className="text-sm text-indigo-700 dark:text-indigo-300">
                     {user?.email || "Correo no disponible"}
                   </p>
                 </div>
               </div>
             </Card>
+
+            <ProfileSettingsDrawer
+              open={settingsOpen}
+              setOpen={setSettingsOpen}
+              user={user}
+              setUser={setUser}
+            />
           </div>
 
-          <nav className="flex-1 px-4 py-6">
+          <nav className="flex-1 px-4 py-6 border-t border-gray-100">
             <ul className="space-y-2">
               {subCategories.map((item) => (
                 <li
@@ -79,16 +98,15 @@ export default function Dashboard() {
         <main className="flex-1 pt-20 p-6 md:p-10 transition-all">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                Electronic Arts
+              <h1 className="text-2xl font-semibold text-gray-800 uppercase mb-1">
+                Profile
               </h1>
-              <p className="text-sm text-gray-800 dark:text-gray-200">
+              <p className="text-sm text-gray-800 dark:text-gray-600">
                 American video game company
               </p>
             </div>
 
             <div className="flex items-center gap-6">
-              {/* Parte del search */}
               <div className="bg-white/80 dark:bg-gray-800/60 rounded-xl px-6 py-3 shadow-sm border border-gray-100 dark:border-gray-700">
                 <p className="text-xl text-gray-500 dark:text-gray-200">
                   All Time Profit
@@ -100,21 +118,8 @@ export default function Dashboard() {
 
           {/* Electronic Arts - Your Watchlist */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <Card className="bg-white/90 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
-              <CardHeader className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-                <CardTitle>Electronic Arts</CardTitle>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                  88.10 USD
-                  <span className="text-emerald-500 ml-2 font-semibold">
-                    +5.23%
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center text-gray-400">
-                  (Chart preview)
-                </div>
-              </CardContent>
+            <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
+              <DashBoard />
             </Card>
 
             <Card className="bg-white/90 dark:bg-gray-800/70 border-none rounded-2xl shadow-sm backdrop-blur-sm">

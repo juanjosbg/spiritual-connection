@@ -21,7 +21,7 @@ export function MeditationSidebar({
       <div className="flex items-center gap-2 px-6 py-6">
         <Card className="border-none shadow-none bg-transparent">
           <div className="flex items-start gap-2">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 flex items-center justify-center text-xl font-bold text-white">
+            <div className="h-10 w-10 rounded-full from-indigo-400 to-emerald-400 flex items-center justify-center text-xl font-bold text-white">
               {user?.user_metadata?.first_name
                 ? user.user_metadata.first_name.charAt(0).toUpperCase()
                 : "?"}

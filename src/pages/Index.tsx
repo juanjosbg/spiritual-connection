@@ -65,7 +65,7 @@ const Index = () => {
       )}
 
       <section className="mt-20 w-full flex flex-col items-center justify-center text-white rounded-3xl overflow-hidden">
-        <div className="w-full bg-[#92a583] text-center py-16 px-6">
+        <div className="w-full bg-[#92a583] dark:bg-[#c3b1ff] text-center py-16 px-6">
           <h2 className="text-4xl md:text-5xl font-light mb-4">
             The Six Human Dimensions
           </h2>
@@ -89,9 +89,8 @@ const Index = () => {
               { id: "soul", title: "Soul", icon: <Star className="w-8 h-8" /> },
             ].map((item) => {
               const isActive = activeCard === item.id;
-              const base =
-                "h-60 w-50 shadow hover:shadow-2xl flex flex-col items-center justify-center rounded-xl py-6 transition-all duration-300";
-              const active = "bg-[#9B6BFF] text-white";
+              const base = "h-60 w-72 shadow hover:shadow-2xl flex flex-col items-center justify-center rounded-xl py-6 transition-all duration-300";
+              const active = "bg-[#c3b1ff] text-white";
               const idle = "bg-[#c8d1c0] text-gray-700 hover:bg-[#b2bca9]";
 
               const handleClick = () => {
