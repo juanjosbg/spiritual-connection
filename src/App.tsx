@@ -1,4 +1,4 @@
-// App.tsx
+// src/App.tsx
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,14 +8,17 @@ import { Toaster as Sonner } from "./components/ui/sonner";
 
 import { Navbar } from "@/components/Navbar";
 import MeditationScene from "@/components/screensaver/MeditationScene";
-import PoseDetail from "@/pages/Meditation/PoseDetail"
 
-import Index from "./pages/Index";
+import Index from "@/pages/Index";
 import Login from "@/pages/Login";
-import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
-import NotFound from "./pages/NotFound";
-import Meditacion from "@/pages/meditation";
+import Profile from "@/pages/Profile";
+import NotFound from "@/pages/NotFound";
+
+// 🧘 Nuevo módulo de meditación
+import MeditationPage from "@/pages/Meditation/MeditationPage";
+import PoseDetail from "@/pages/Meditation/PoseDetail";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -68,17 +71,22 @@ function AppContent() {
         />
       )}
 
-      {/* 📜 Rutas de la app */}
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/meditation" element={<Meditacion />} />
+        <Route path="/profile" element={<Profile />} />
 
+        {/* 🧘 Módulo de meditación */}
+        <Route path="/meditation" element={
+            <ProtectedRoute>
+              <MeditationPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/meditation/pose/:id" element={<PoseDetail />} />
-        
-        <Route path="/not-found" element={<NotFound />} />
+
+        {/* ❌ 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Card } from "../ui/card";
+import { Button } from "../ui/button";
 import { Play, Pause, RotateCcw, Clock } from "lucide-react";
 
 const meditations = [

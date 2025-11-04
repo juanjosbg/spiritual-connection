@@ -13,7 +13,7 @@ export function useTheme() {
 
     if (theme === "dark") {
       root.classList.add("dark");
-      root.style.backgroundColor = "#f6f7f9";
+      root.style.backgroundColor = "#D4DCCD";
     } else {
       root.classList.remove("dark");
       root.style.backgroundColor = "#111827";

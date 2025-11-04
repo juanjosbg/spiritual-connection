@@ -6,6 +6,8 @@ import { supabase } from "@/lib/database/supabaseClient";
 import { Card } from "@/components/ui/card";
 import { fetchAllPoses, type Pose } from "@/lib/meditation/yogaApi";
 import { PoseCard } from "@/components/meditation/PoseCard";
+import { QuizMeditation } from "@/components/meditation/QuizMeditation";
+import { Link } from "react-router-dom";
 
 const subCategories = [
   { name: "Mis rutinas", href: "#" },
@@ -20,6 +22,7 @@ function classNames(...classes: string[]) {
 
 export default function MeditationPage() {
   const [user, setUser] = useState<any>(null);
+  const [level, setLevel] = useState<string | null>(null);
   const [poses, setPoses] = useState<Pose[]>([]);
   const [filtered, setFiltered] = useState<Pose[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +35,17 @@ export default function MeditationPage() {
     const getUserData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+
+      if (user) {
+        const { data, error } = await supabase
+          .from("user_levels")
+          .select("level")
+          .eq("user_id", user.id)
+          .eq("category", "meditation")
+          .single();
+
+        if (!error && data) setLevel(data.level);
+      }
     };
     getUserData();
   }, []);
@@ -67,9 +81,44 @@ export default function MeditationPage() {
       </div>
     );
 
+  // 🔒 Si no hay usuario, pedimos login o registro
+  if (!user) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center text-center px-6">
+        <h2 className="text-2xl font-semibold text-indigo-600 mb-4">
+          🔒 Necesitas iniciar sesión
+        </h2>
+        <p className="text-gray-600 mb-6">
+          Inicia sesión o regístrate para descubrir tu nivel de meditación y acceder a tus rutinas personalizadas.
+        </p>
+        <div className="flex gap-4">
+          <Link
+            to="/login"
+            className="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition"
+          >
+            Iniciar sesión
+          </Link>
+          <Link
+            to="/register"
+            className="border border-indigo-600 text-indigo-600 px-5 py-2 rounded-full hover:bg-indigo-600 hover:text-white transition"
+          >
+            Registrarme
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // 🧘 Si el usuario está logueado pero no tiene nivel → mostrar quiz
+  if (!level) {
+    return <QuizMeditation userId={user.id} onComplete={setLevel} />;
+  }
+
+  // 🧘 Si tiene nivel → mostrar rutinas normales (tu contenido original)
   return (
     <div className="relative min-h-screen">
       <div className="flex min-h-screen mt-12">
+        {/* Sidebar */}
         <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center gap-2 px-6 py-6">
             <Card className="border-none shadow-none bg-transparent">
@@ -85,20 +134,19 @@ export default function MeditationPage() {
                 <div>
                   <h1 className="text-xl font-bold uppercase text-gray-100">
                     {user?.user_metadata?.first_name
-                      ? `${user.user_metadata.first_name} ${
-                          user.user_metadata.last_name || ""
-                        }`
+                      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ""}`
                       : "Usuario sin nombre"}
                   </h1>
                   <p className="mb-1 text-sm text-indigo-300">
                     {user?.email || "Correo no disponible"}
                   </p>
+                  <span className="text-xs text-indigo-400">Nivel: {level}</span>
                 </div>
               </div>
             </Card>
           </div>
 
-          {/* 🔹 Filtros de Meditación */}
+          {/* Filtros */}
           <div className="flex flex-col gap-4 px-6 py-6">
             <h2 className="text-lg font-semibold text-indigo-300 flex items-center gap-2">
               <Filter className="w-4 h-4 text-indigo-400" /> Filtros
@@ -127,7 +175,7 @@ export default function MeditationPage() {
             </select>
           </div>
 
-          {/* 🔹 Menú lateral (opcional) */}
+          {/* Subcategorías */}
           <nav className="flex-1 px-4 py-6 border-t border-indigo-800/30">
             <ul className="space-y-2">
               {subCategories.map((item) => (
@@ -144,7 +192,6 @@ export default function MeditationPage() {
           </nav>
         </aside>
 
-        {/* 🔹 MAIN CONTENT */}
         <main className="flex-1 pt-20 p-6 md:p-10 transition-all">
           <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
             <div>
@@ -152,35 +199,16 @@ export default function MeditationPage() {
                 Explora tus Rutinas de Yoga
               </h2>
               <p className="text-sm text-indigo-300 mt-1">
-                Encuentra la práctica perfecta según tu energía y nivel 🌿
+                Bienvenido {user?.user_metadata?.first_name || ""}, estás en nivel <b>{level}</b> 🌿
               </p>
             </div>
             <Sparkles className="w-10 h-10 text-indigo-400 animate-float" />
           </header>
 
-          {/* GRID DE POSES */}
           <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((pose) => (
               <PoseCard key={pose.id} pose={pose} size="sm" />
             ))}
-          </section>
-
-          {/* CTA FINAL */}
-          <section className="mt-16">
-            <Card className="bg-indigo-100/10 border border-indigo-500/20 text-white rounded-2xl shadow-lg flex justify-between items-center p-6 backdrop-blur-md">
-              <div>
-                <h3 className="text-2xl font-semibold mb-2">
-                  Tu práctica, tu energía
-                </h3>
-                <p className="text-sm mb-4 text-indigo-300">
-                  Dedica unos minutos al día a tu bienestar ✨
-                </p>
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-md text-sm transition">
-                  Empezar ahora
-                </button>
-              </div>
-              <Sparkles className="w-20 h-20 text-indigo-400 opacity-70" />
-            </Card>
           </section>
         </main>
       </div>
