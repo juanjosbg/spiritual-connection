@@ -24,7 +24,7 @@ function classNames(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
+export function Navbar({  }: NavbarProps) {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const session = useSession();
@@ -36,12 +36,6 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const navigation = [
-    { name: "Inicio", key: "home" as Section, onClick: () => navigate("/") },
-    { name: "Meditar", key: "meditate" as Section, onClick: () => setActiveSection("meditate") },
-    { name: "Respirar", key: "breathe" as Section, onClick: () => setActiveSection("breathe") },
-  ];
 
   return (
     <Disclosure
@@ -57,6 +51,7 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
+          {/* Logo */}
           <div
             className="flex shrink-0 items-center gap-2 cursor-pointer"
             onClick={() => navigate("/")}
@@ -67,28 +62,7 @@ export function Navbar({ activeSection, setActiveSection }: NavbarProps) {
             </span>
           </div>
 
-          {/* Links */}
-          <div className="hidden sm:block">
-            <div className="ml-6 flex space-x-1">
-              {navigation.map((item) => {
-                const isActive = activeSection === item.key;
-                return (
-                  <button
-                    key={item.key}
-                    onClick={item.onClick}
-                    className={classNames(
-                      isActive
-                        ? "text-indigo-600 dark:text-white"
-                        : "text-gray-700 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium transition-colors"
-                    )}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {/* (El bloque de links se eliminó) */}
 
           {/* Botón de tema + perfil */}
           <div className="flex items-center gap-3">

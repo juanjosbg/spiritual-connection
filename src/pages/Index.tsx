@@ -1,22 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { QuoteSection } from "@/components/prube/QuoteSection";
-import { MeditationSection } from "@/components/MeditationSection";
-import { BreathingExercise } from "@/components/BreathingExercise";
-import { Card } from "@/components/ui/card";
-import { Sparkles, Wind, Flower2, Music } from "lucide-react";
-import {
-  fetchRelaxMusic,
-  type RelaxTrack,
-} from "@/lib/meditation/fetchRelaxMusic";
-import MeditationScene from "@/components/prube/MeditationScene";
-import YogaApi from "@/pages/meditation";
+import { useNavigate } from "react-router-dom";
+import { Flower2, Leaf, Dumbbell, Heart, Eye, Star, Users, Smile, } from "lucide-react";
+import { fetchRelaxMusic, type RelaxTrack } from "@/lib/meditation/music/fetchRelaxMusic";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState<
-    "home" | "meditate" | "breathe"
-  >("home");
-  const [tracks, setTracks] = useState<RelaxTrack[]>([]);
+  const navigate = useNavigate();
+  const [activeSection] = useState<"home" | "meditate" | "breathe">("home");
+  const [, setTracks] = useState<RelaxTrack[]>([]);
+  const [activeCard, setActiveCard] = useState("body");
 
   useEffect(() => {
     if (activeSection === "home") {
@@ -25,109 +17,106 @@ const Index = () => {
   }, [activeSection]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <main className="container mx-auto px-4 py-14">
-        {activeSection === "home" && (
-          <div className="space-y-12 animate-fade-in">
-            <section className="relative px-6 md:px-10 py-12">
-              <div className="text-center relative">
-                <div className="inline-block animate-float">
-                  <Flower2 className="w-16 h-16 text-indigo-400 mx-auto mb-4" />
-                </div>
-                <h2 className="text-4xl md:text-5xl font-light tracking-wide dark:text-white uppercase">
-                  Tu camino hacia el equilibrio
-                </h2>
-                <p className="mt-3 text-gray-600 dark:text-white text-lg">
-                  Una experiencia para reconectar cuerpo, mente y espíritu 🌿
-                </p>
-              </div>
-            </section>
-
-            <QuoteSection />
-
-            {tracks.length > 0 && (
-              <section className="space-y-6 mt-6">
-                <div className="flex items-center justify-center gap-2">
-                  <Music className="w-6 h-6 text-indigo-400" />
-                  <h3 className="text-2xl font-light text-gray-800">
-                    Sonidos para el alma
-                  </h3>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                  {tracks.slice(0, 3).map((track) => (
-                    <Card
-                      key={track.id}
-                      className="p-4 sm:p-6 rounded-2xl bg-white/70 border border-white/50 backdrop-blur-xl hover:shadow-xl transition-all"
-                    >
-                      <img
-                        src={track.image}
-                        alt={track.title}
-                        className="w-full h-40 object-cover rounded-xl mb-4 opacity-95 hover:opacity-100 transition-opacity"
-                      />
-                      <h4 className="text-lg font-medium text-gray-800">
-                        {track.title}
-                      </h4>
-                      <p className="text-sm text-gray-600">{track.artist}</p>
-                      <audio
-                        controls
-                        src={track.audio}
-                        className="w-full mt-3"
-                      />
-                    </Card>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <section className="grid md:grid-cols-3 gap-6">
-              <Card className="border-none"></Card>
-
-              <Card
-                className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={() => setActiveSection("meditate")}
-              >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-indigo-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    Meditación Guiada
-                  </h3>
-                  <p className="text-gray-600">
-                    Sesiones de 5, 10 y 15 minutos para calmar tu mente y
-                    conectar con tu interior.
-                  </p>
-                  <YogaApi/>
-                </div>
-              </Card>
-
-              <Card
-                className="p-6 rounded-2xl cursor-pointer bg-white/70 border border-white/50 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all"
-                onClick={() => setActiveSection("breathe")}
-              >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
-                    <Wind className="w-6 h-6 text-sky-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    Respiración Consciente
-                  </h3>
-                  <p className="text-gray-600">
-                    Técnicas 4-7-8, box breathing y pranayama para reducir
-                    ansiedad.
-                  </p>
-                </div>
-              </Card>
-            </section>
+    <div className="relative min-h-screen overflow-hidden py-8">
+      {activeSection === "home" && (
+        <section className="relative flex flex-col lg:flex-row items-center justify-between w-full px-6 md:px-16 py-20 bg-white rounded-3xl shadow-xl mx-auto mt-10 max-w-7xl overflow-hidden">
+          <div className="relative inset-0 lg:static lg:w-1/2">
+            <img
+              src="https://www.revistayogaspirit.es/wp-content/uploads/2023/05/GettyImages-1272476948_bjk.jpg"
+              alt="Mindful meditation"
+              className="object-cover w-full h-full rounded-3xl brightness-95"
+            />
           </div>
-        )}
 
-        {activeSection === "meditate" && <MeditationSection />}
-        {activeSection === "breathe" && <BreathingExercise />}
-      </main>
+          {/* 🌸 Contenido textual */}
+          <div className="relative lg:w-1/2 lg:ml-auto p-6 md:p-12 space-y-6 bg-white/80 backdrop-blur-md rounded-2xl">
+            <h1 className="text-4xl md:text-5xl font-light leading-tight text-gray-800">
+              Mindful Space <br />
+              That Revives <span className="font-semibold text-indigo-500">Soul</span>
+            </h1>
 
-      <MeditationScene />
+            <p className="text-gray-600 text-lg leading-relaxed">
+              We cultivate mindful practices that align body, mind, and spirit in a sanctuary
+              of beauty and balance.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 bg-white/60 px-3 py-2 rounded-full shadow-sm">
+                <Users className="text-indigo-500 w-5 h-5" />
+                <span className="text-gray-800 text-sm font-medium">2300+ Members Worldwide</span>
+              </div>
+
+              <div className="flex items-center gap-2 bg-green-100 px-3 py-2 rounded-full shadow-sm">
+                <Smile className="text-green-600 w-5 h-5" />
+                <span className="text-green-700 text-sm font-medium">
+                  96% Happy Guests Report Deep Inner Calm
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => navigate("/meditation")}
+              className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md"
+            >
+              Start Your Journey
+            </button>
+          </div>
+        </section>
+      )}
+
+      <section className="mt-20 w-full flex flex-col items-center justify-center text-white rounded-3xl overflow-hidden">
+        <div className="w-full bg-[#92a583] text-center py-16 px-6">
+          <h2 className="text-4xl md:text-5xl font-light mb-4">
+            The Six Human Dimensions
+          </h2>
+          <p className="text-purple-100 text-lg max-w-2xl mx-auto mb-6">
+            All of our classes and programs are built and designed to exercise and
+            strengthen these 6 Human Dimensions. We invite you to explore them here, and within.
+          </p>
+          <button className="bg-white text-purple-700 px-6 py-2 rounded-full font-medium shadow hover:bg-purple-100 transition">
+            Try For Free
+          </button>
+        </div>
+
+        <div className="w-full flex justify-center items-center py-10 px-6">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 w-full px-6">
+            {[
+              { id: "meditation", title: "Meditation", icon: <Flower2 className="w-8 h-8" />, link: "/meditation" },
+              { id: "nutrition", title: "Nutrition", icon: <Leaf className="w-8 h-8" /> },
+              { id: "exercise", title: "Exercise", icon: <Dumbbell className="w-8 h-8" /> },
+              { id: "spirituality", title: "Spirituality", icon: <Heart className="w-8 h-8" /> },
+              { id: "awareness", title: "Awareness", icon: <Eye className="w-8 h-8" /> },
+              { id: "soul", title: "Soul", icon: <Star className="w-8 h-8" /> },
+            ].map((item) => {
+              const isActive = activeCard === item.id;
+              const base =
+                "h-60 w-50 shadow hover:shadow-2xl flex flex-col items-center justify-center rounded-xl py-6 transition-all duration-300";
+              const active = "bg-[#9B6BFF] text-white";
+              const idle = "bg-[#c8d1c0] text-gray-700 hover:bg-[#b2bca9]";
+
+              const handleClick = () => {
+                if (item.link) {
+                  navigate(item.link);
+                } else {
+                  setActiveCard(item.id);
+                }
+              };
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={handleClick}
+                  className={`${base} ${isActive ? active : idle}`}
+                  aria-label={item.title}
+                >
+                  <div className="mb-2">{item.icon}</div>
+                  <span className="font-light">{item.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
