@@ -253,8 +253,11 @@ export const DashBoard = () => {
             </p>
           </div>
 
-          <p className="text-2xl font-semibold text-gray-900 text-right">
+          <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
             {activeDays}
+            <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+              días
+            </span>
           </p>
         </div>
 
@@ -287,12 +290,12 @@ export const DashBoard = () => {
             </p>
           </div>
 
-          <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {totalMinutes}
-            <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              min
-            </span>
-          </p>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {totalMinutes}
+              <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                min
+              </span>
+            </p>
         </div>
 
         <div className="mt-4">
