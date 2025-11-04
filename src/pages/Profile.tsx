@@ -17,23 +17,47 @@ const subCategories = [
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
+  const [level, setLevel] = useState<string>("Beginner");
+  const [xp, setXp] = useState<number>(45); // 🔹 XP actual del usuario
+  const [progress, setProgress] = useState<number>(0); // 🔹 Porcentaje visual de XP
 
+  // Obtener usuario de Supabase
   useEffect(() => {
     const getUserData = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
+
+      // Si tuvieras la tabla user_levels, aquí podrías obtener su nivel real
+      if (user) {
+        const { data } = await supabase
+          .from("user_levels")
+          .select("level, xp")
+          .eq("user_id", user.id)
+          .single();
+
+        if (data) {
+          setLevel(data.level || "Beginner");
+          setXp(data.xp || 0);
+        }
+      }
     };
     getUserData();
   }, []);
+
+  // Calcular el progreso (porcentaje visual)
+  useEffect(() => {
+    setProgress(Math.min((xp / 100) * 100, 100));
+  }, [xp]);
 
   return (
     <div className="relative min-h-screen">
       <div className="flex min-h-screen mt-12">
         <SidebarProfile user={user} subCategories={subCategories} />
-        
+
         <main className="flex-1 pt-20 p-6 md:p-10 transition-all">
+          {/* Header principal */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-800 uppercase mb-1">
@@ -54,52 +78,65 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Electronic Arts - Your Watchlist */}
+          {/* Grid principal */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Dashboard principal */}
             <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
               <DashBoard />
             </Card>
 
+            {/* 🔹 Sección Mi Progreso */}
             <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none">
-              <CardHeader className="flex flex-row justify-between items-center border-b border-gray-200 dark:border-gray-400">
-                <CardTitle className="uppercase text-xl">Mis certificados</CardTitle>
-                <a href="#" className="text-sm text-indigo-500">
-                  View All
-                </a>
+              <CardHeader className="flex flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-gray-600" />
+                  <CardTitle className="uppercase text-lg">
+                    Mi progreso
+                  </CardTitle>
+                </div>
+                <span className="text-xs text-gray-700 font-medium">
+                  Nivel actual: {level}
+                </span>
               </CardHeader>
+
               <CardContent className="p-6 space-y-4">
-                {[
-                  {
-                    name: "Netflix",
-                    value: "+0.31%",
-                    color: "text-emerald-500",
-                  },
-                  {
-                    name: "CD Projekt",
-                    value: "-1.65%",
-                    color: "text-red-500",
-                  },
-                  {
-                    name: "Square Enix",
-                    value: "+2.25%",
-                    color: "text-emerald-500",
-                  },
-                  { name: "Apple", value: "+0.53%", color: "text-emerald-500" },
-                ].map((item) => (
-                  <div
-                    key={item.name}
-                    className="flex justify-between items-center text-sm"
-                  >
-                    <span>{item.name}</span>
-                    <span className={`font-semibold ${item.color}`}>
-                      {item.value}
-                    </span>
+                <div>
+                  <p className="text-sm text-gray-900 mb-2">
+                    Experiencia acumulada
+                  </p>
+
+                  {/* Barra de progreso */}
+                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-1">
+                    <div
+                      className="h-2 bg-indigo-500 rounded-full transition-all duration-500"
+                      style={{ width: `${progress}%` }}
+                    ></div>
                   </div>
-                ))}
+
+                  {/* XP numérico */}
+                  <p className="text-xs mt-2 text-gray-900 font-medium">
+                    {xp}/100 XP {progress === 100 && "🎉 Nivel completado"}
+                  </p>
+                </div>
+
+                {/* Detalle visual o recompensas */}
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-4">
+                  <div>
+                    <p className="font-medium text-indigo-400">
+                      Siguiente nivel
+                    </p>
+                    <p className="text-xs text-gray-900 font-medium">100 XP</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-indigo-500">Recompensa</p>
+                    <p className="text-xs text-gray-900 font-medium">🏅 Medalla “Mindful Explorer”</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
 
+          {/* Carrusel inferior */}
           <section className="mt-10">
             <SimilarCompaniesCarousel
               items={[
@@ -114,6 +151,7 @@ export default function Dashboard() {
             />
           </section>
 
+          {/* Sección final */}
           <section className="mt-10">
             <Card className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-100 rounded-2xl shadow-none flex justify-between items-center p-6">
               <div>
