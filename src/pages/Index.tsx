@@ -32,7 +32,7 @@ const Index = () => {
           <div className="relative lg:w-1/2 lg:ml-auto p-6 md:p-12 space-y-6 bg-white/80 backdrop-blur-md rounded-2xl">
             <h1 className="text-4xl md:text-5xl font-light leading-tight text-gray-800">
               Mindful Space <br />
-              That Revives <span className="font-semibold text-indigo-500">Soul</span>
+              That Revives <span className="font-semibold text-[#88b863]">Soul</span>
             </h1>
 
             <p className="text-gray-600 text-lg leading-relaxed">
@@ -56,7 +56,7 @@ const Index = () => {
 
             <button
               onClick={() => navigate("/meditation")}
-              className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md"
+              className="mt-6 bg-[#88b863] hover:bg-[#699944] text-white px-6 py-3 rounded-full font-medium transition-all shadow-md"
             >
               Start Your Journey
             </button>
@@ -65,7 +65,7 @@ const Index = () => {
       )}
 
       <section className="mt-20 w-full flex flex-col items-center justify-center text-white rounded-3xl overflow-hidden">
-        <div className="w-full bg-[#92a583] dark:bg-[#c3b1ff] text-center py-16 px-6">
+        <div className="w-full bg-[#88b863] text-center py-16 px-6">
           <h2 className="text-4xl md:text-5xl font-light mb-4">
             The Six Human Dimensions
           </h2>
@@ -90,8 +90,8 @@ const Index = () => {
             ].map((item) => {
               const isActive = activeCard === item.id;
               const base = "h-60 w-72 shadow hover:shadow-2xl flex flex-col items-center justify-center rounded-xl py-6 transition-all duration-300";
-              const active = "bg-[#c3b1ff] text-white";
-              const idle = "bg-[#c8d1c0] text-gray-700 hover:bg-[#b2bca9]";
+              const active = "bg-[#7caf55] text-white";
+              const idle = "bg-[#7caf55] text-gray-200 hover:bg-[#b2bca9]";
 
               const handleClick = () => {
                 if (item.link) {

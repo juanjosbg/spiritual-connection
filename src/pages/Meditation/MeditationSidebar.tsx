@@ -50,8 +50,7 @@ export function MeditationSidebar({
 
   return (
     <aside
-      className={classNames(
-        "hidden md:flex w-[38vh] flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm",
+      className={classNames( "hidden md:flex w-[38vh] flex-col border-r bg-[#73946B] backdrop-blur-sm",
         className
       )}
     >
@@ -78,13 +77,13 @@ export function MeditationSidebar({
             </div>
 
             <div className="text-left">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <h1 className="text-lg font-semibold text-gray-100">
                 {user?.user_metadata?.first_name || "Usuario sin nombre"}
               </h1>
-              <p className="text-sm text-indigo-700 dark:text-indigo-300">
+              <p className="text-sm text-gray-200">
                 {user?.email || "Correo no disponible"}
               </p>
-              <span className="text-xs text-indigo-400">
+              <span className="text-xs text-gray-300">
                 Nivel: {level || "Sin nivel"}
               </span>
             </div>
@@ -101,12 +100,12 @@ export function MeditationSidebar({
 
       {/* 🔹 Filtros */}
       <div className="flex flex-col gap-4 px-6 py-6">
-        <h2 className="text-lg font-semibold text-indigo-300 flex items-center gap-2">
-          <Filter className="w-4 h-4 text-indigo-400" /> Filtros
+        <h2 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
+          <Filter className="w-4 h-4 text-gray-300" /> Filtros
         </h2>
 
         <select
-          className="bg-gray-900/90 rounded-full px-5 py-2 text-sm outline-none text-white"
+          className="bg-[#617c5b] shadow-md rounded-full px-5 py-2 text-sm outline-none text-white"
           value={difficulty}
           onChange={handleDifficultyChange}
         >
@@ -117,7 +116,7 @@ export function MeditationSidebar({
         </select>
 
         <select
-          className="bg-gray-900/90 rounded-full px-5 py-2 text-sm outline-none text-white"
+          className="bg-[#617c5b] shadow-md rounded-full px-5 py-2 text-sm outline-none text-white"
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
         >
@@ -128,12 +127,12 @@ export function MeditationSidebar({
         </select>
       </div>
 
-      <nav className="flex-1 px-4 py-6 border-t border-indigo-800/30">
+      <nav className="flex-1 px-4 py-6 border-t border-[#617c5b]/20">
         <ul className="space-y-2">
           {subCategories.map((item) => (
             <li
               key={item}
-              className="flex items-center gap-3 px-3 py-2 rounded-md text-indigo-200 hover:bg-indigo-800/40 cursor-pointer"
+              className="flex items-center gap-3 px-3 py-2 rounded-full text-gray-100 hover:bg-[#617c5b] hover:shadow-md cursor-pointer"
             >
               {item}
             </li>
