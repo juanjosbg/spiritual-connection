@@ -42,7 +42,7 @@ export const DashBoard = () => {
   // Fechas base
   const today = new Date();
   const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay() + 1); // lunes
+  weekStart.setDate(today.getDate() - today.getDay() + 1);
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 6);
 
@@ -50,7 +50,7 @@ export const DashBoard = () => {
   const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
   const formatISO = (date: Date) => date.toISOString().split("T")[0];
 
-  const minutesTarget = 300; // meta semanal en minutos
+  const minutesTarget = 300;
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -139,7 +139,6 @@ export const DashBoard = () => {
     fetchMetrics();
   }, []);
 
-  // 🔹 Gráfico donut de categorías
   const donutData = {
     labels: byCategory.map((c) => c.category),
     datasets: [
@@ -156,7 +155,6 @@ export const DashBoard = () => {
     ],
   };
 
-  // 🔹 Gráfico línea semanal (dummy)
   const lineData = {
     labels: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
     datasets: [
@@ -174,38 +172,29 @@ export const DashBoard = () => {
   return (
     <div className="grid md:grid-cols-3 gap-6 py-5 px-5">
       <div className="col-span-1 space-y-4">
-        {/* Streak y consistencia */}
         <Card className="p-6 border-0">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Streak actual
-              </p>
-              <p className="text-3xl font-semibold">🔥 {streak} días</p>
-              <p className="text-xs text-gray-400 mt-1">Máximo: {bestStreak}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Consistencia
-              </p>
-              <p className="text-2xl font-semibold">{consistency}%</p>
-            </div>
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="w-5 h-5 text-gray-600" />
+            <h2 className="text-sm text-gray-500 dark:text-gray-400">
+              Actividades por categoría
+            </h2>
           </div>
-          <div className="mt-4">
-            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded">
-              <div
-                className="h-2 bg-indigo-500 rounded"
-                style={{ width: `${consistency}%` }}
-              />
-            </div>
-          </div>
+          {byCategory.length > 0 ? (
+            <Doughnut data={donutData} />
+          ) : (
+            <p className="text-gray-400 text-sm text-center">
+              No hay datos de categorías aún.
+            </p>
+          )}
         </Card>
 
-        {/* Meta semanal */}
         <Card className="p-6 border-0">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Meta semanal
-          </p>
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="w-5 h-5 text-gray-600" />
+            <h2 className="text-sm text-gray-500 dark:text-gray-400">
+              Meta semanal
+            </h2>
+          </div>
           <p className="text-xl font-semibold">
             {completedTasks}/{weeklyTarget}
           </p>
@@ -224,9 +213,12 @@ export const DashBoard = () => {
       </div>
 
       <Card className="p-6 col-span-2 border-0">
-        <h2 className="text-xl font-light text-gray-800 dark:text-gray-200 mb-4">
-          Actividades completadas por día
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <BarChart3 className="w-5 h-5 text-gray-600" />
+          <h2 className="text-sm text-gray-500 dark:text-gray-400">
+            Actividades completadas por día
+          </h2>
+        </div>
         {completedTasks > 0 ? (
           <Line
             data={lineData}
@@ -242,6 +234,32 @@ export const DashBoard = () => {
         ) : (
           <p className="text-gray-400 text-sm">No hay datos todavía.</p>
         )}
+      </Card>
+
+      <Card className="p-6 border-0">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Streak actual
+            </p>
+            <p className="text-3xl font-semibold">🔥 {streak} días</p>
+            <p className="text-xs text-gray-400 mt-1">Máximo: {bestStreak}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Consistencia
+            </p>
+            <p className="text-2xl font-semibold">{consistency}%</p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded">
+            <div
+              className="h-2 bg-indigo-500 rounded"
+              style={{ width: `${consistency}%` }}
+            />
+          </div>
+        </div>
       </Card>
 
       <Card className="p-6 border-0">
@@ -281,6 +299,7 @@ export const DashBoard = () => {
           </div>
         </div>
       </Card>
+
       <Card className="p-6 border-0">
         <div className="flex flex-row justify-between items-start">
           <div className="flex items-center gap-2">
@@ -290,12 +309,12 @@ export const DashBoard = () => {
             </p>
           </div>
 
-            <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {totalMinutes}
-              <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-                min
-              </span>
-            </p>
+          <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            {totalMinutes}
+            <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+              min
+            </span>
+          </p>
         </div>
 
         <div className="mt-4">
@@ -317,22 +336,6 @@ export const DashBoard = () => {
             />
           </div>
         </div>
-      </Card>
-
-      <Card className="p-6 border-0">
-        <div className="flex items-center gap-2 mb-4">
-          <BarChart3 className="w-5 h-5 text-gray-600" />
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Actividades por categoría
-          </p>
-        </div>
-        {byCategory.length > 0 ? (
-          <Doughnut data={donutData} />
-        ) : (
-          <p className="text-gray-400 text-sm text-center">
-            No hay datos de categorías aún.
-          </p>
-        )}
       </Card>
     </div>
   );

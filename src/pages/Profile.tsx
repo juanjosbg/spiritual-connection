@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SimilarCompaniesCarousel from "@/components/Profile/SimilarCompaniesCarousel";
 import { DashBoard } from "@/components/dashboard/DashBoard";
 import SidebarProfile from "@/components/layout/SidebarProfile";
+import { logUserActivity } from "@/lib/database/logActivity";
+import UserProgress from "@/components/challenges/UserProgress";
 
 const subCategories = [
   { name: "Dashboard", href: "#" },
@@ -19,7 +21,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [level, setLevel] = useState<string>("Beginner");
   const [xp, setXp] = useState<number>(5);
-  const [progress, setProgress] = useState<number>(0); 
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -47,6 +49,35 @@ export default function Dashboard() {
   useEffect(() => {
     setProgress(Math.min((xp / 100) * 100, 100));
   }, [xp]);
+
+  useEffect(() => {
+    logUserActivity();
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel("user_levels_updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "user_levels",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          setXp(payload.new.xp);
+          setLevel(payload.new.level);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   return (
     <div className="relative min-h-screen">
@@ -80,7 +111,7 @@ export default function Dashboard() {
             </Card>
 
             <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none">
-              <CardHeader className="flex flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700">
+              <CardHeader className="flex flex-row justify-between mx-4 items-center border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-gray-600" />
                   <CardTitle className="uppercase text-lg">
@@ -92,7 +123,7 @@ export default function Dashboard() {
                 </span>
               </CardHeader>
 
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-6 space-y-4 bg-white shadow-md my-4 mx-4 rounded-2xl">
                 <div>
                   <p className="text-sm text-gray-900 mb-2">
                     Experiencia acumulada
@@ -106,7 +137,12 @@ export default function Dashboard() {
                   </div>
 
                   <p className="text-xs mt-2 text-gray-900 font-medium">
-                    {xp}/100 XP {progress === 100 && "🎉 Nivel completado"}
+                    {xp}/100 XP{" "}
+                    {progress === 100 && (
+                      <span className="animate-bounce text-yellow-500 font-bold">
+                        🎉 Nivel completado
+                      </span>
+                    )}
                   </p>
                 </div>
 
@@ -119,10 +155,14 @@ export default function Dashboard() {
                   </div>
                   <div className="text-right">
                     <p className="font-medium text-indigo-500">Recompensa</p>
-                    <p className="text-xs text-gray-900 font-medium">🏅 Medalla “Mindful Explorer”</p>
+                    <p className="text-xs text-gray-900 font-medium">
+                      🏅 Medalla “Mindful Explorer”
+                    </p>
                   </div>
                 </div>
               </CardContent>
+
+              <UserProgress user={user} />
             </Card>
           </div>
 

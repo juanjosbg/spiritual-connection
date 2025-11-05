@@ -7,6 +7,9 @@ import { MeditationSidebar } from "./MeditationSidebar";
 import { MeditationContent } from "./MeditationContent";
 import { MeditationEmptyState } from "@/pages/Meditation/MeditationEmptyState";
 
+import ChallengesList from "@/components/challenges/ChallengesList";
+import UserProgress from "@/components/challenges/UserProgress";
+
 export default function MeditationPage() {
   const [user, setUser] = useState<any>(null);
   const [level, setLevel] = useState<string | null>(null);
@@ -18,7 +21,9 @@ export default function MeditationPage() {
 
   useEffect(() => {
     const getUserData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
 
       if (user) {
@@ -76,7 +81,10 @@ export default function MeditationPage() {
         duration={duration}
         setDuration={setDuration}
       />
-      <MeditationContent user={user} level={level} filtered={filtered} />
+      <div className="flex-1 space-y-10">
+        <MeditationContent user={user} level={level} filtered={filtered} />
+        <ChallengesList user={user} />
+      </div>
     </div>
   );
 }
