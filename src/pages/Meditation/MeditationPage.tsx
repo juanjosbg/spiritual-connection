@@ -9,6 +9,7 @@ import { MeditationEmptyState } from "@/pages/Meditation/MeditationEmptyState";
 import MeditationSounds from "@/components/meditation/MeditationSounds/MeditationSounds";
 import { Bell } from "lucide-react";
 import ChallengesDrawer from "@/components/challenges/ChallengesDrawer";
+import GratitudeJournal from "@/components/meditation/GratitudeJournal";
 
 export default function MeditationPage() {
   const [user, setUser] = useState<any>(null);
@@ -116,9 +117,7 @@ export default function MeditationPage() {
         )}
 
         {activeSection === "Diario de gratitud" && (
-          <div className="p-8 bg-white rounded-xl text-center text-gray-600 shadow">
-            📖 Tu diario de gratitud estará disponible próximamente.
-          </div>
+          <GratitudeJournal />
         )}
       </div>
     </div>
