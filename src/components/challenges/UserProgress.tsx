@@ -7,6 +7,8 @@ export default function UserProgress({ user }: any) {
   const [achievements, setAchievements] = useState<any[]>([]);
 
   useEffect(() => {
+    if (!user) return;
+    
     const fetchProgress = async () => {
       const { data } = await supabase
         .from("user_levels")

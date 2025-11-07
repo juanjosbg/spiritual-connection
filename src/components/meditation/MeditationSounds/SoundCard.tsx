@@ -1,26 +1,69 @@
 // components/meditation/MeditationSounds/SoundCard.tsx
-import { Headphones, Download } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Headphones, Download, Heart } from "lucide-react";
 import type { RelaxingSound } from "@/lib/meditation/audio/fetchFreesoundSounds";
+import { useSession } from "@/hooks/useSession";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function SoundCard({ sound }: { sound: RelaxingSound }) {
+  const session = useSession();
+  const user = session?.user;
+  const { toggleFavorite, checkFavorite } = useFavorites(user?.id);
+  const [fav, setFav] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      if (user) {
+        const result = await checkFavorite(sound.id.toString());
+        setFav(result);
+      }
+    };
+    load();
+  }, [user, sound.id]);
+
+  const handleToggle = async () => {
+    if (!user) {
+      alert("Debes iniciar sesión para guardar favoritos ✨");
+      return;
+    }
+    await toggleFavorite({ ...sound, id: sound.id.toString() });
+    setFav(!fav);
+  };
+
   return (
-    <article
-      key={sound.id}
-      className="rounded-2xl border border-[#88b863]/30 bg-[#FFFDF6] p-4 hover:shadow-md transition"
+    <article key={sound.id}
+        className="rounded-2xl border border-[#88b863]/30 bg-[#FFFDF6] p-4 hover:shadow-md transition"
     >
-      <div className="flex items-start gap-3">
-        <div className="h-10 w-10 rounded-full bg-[#88b863]/20 flex items-center justify-center">
-          <Headphones className="w-5 h-5 text-[#699944]" />
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-full bg-[#88b863]/20 flex items-center justify-center">
+            <Headphones className="w-5 h-5 text-[#699944]" />
+          </div>
+          <div className="min-w-0">
+            <h3
+              className="font-semibold text-gray-800 truncate"
+              title={sound.name}
+            >
+              {sound.name}
+            </h3>
+            <p className="text-xs text-gray-500">
+              por <span className="font-medium">{sound.username}</span> •{" "}
+              {(sound.duration / 60).toFixed(1)} min
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-gray-800 truncate" title={sound.name}>
-            {sound.name}
-          </h3>
-          <p className="text-xs text-gray-500">
-            por <span className="font-medium">{sound.username}</span> •{" "}
-            {(sound.duration / 60).toFixed(1)} min
-          </p>
-        </div>
+
+        <button
+          onClick={handleToggle}
+          className="text-[#699944] hover:scale-110 transition"
+          title={fav ? "Quitar de favoritos" : "Agregar a favoritos"}
+        >
+          <Heart
+            className={`w-5 h-5 ${
+              fav ? "fill-[#fa7283] text-[#fa7283]" : "text-gray-400"
+            }`}
+          />
+        </button>
       </div>
 
       <audio
@@ -29,20 +72,6 @@ export default function SoundCard({ sound }: { sound: RelaxingSound }) {
         src={sound.url}
         preload="none"
       />
-
-      <div className="flex justify-between items-center mt-3">
-        <span className="text-[11px] text-gray-500">
-          Licencia: {sound.license?.toUpperCase() || "N/D"}
-        </span>
-        <a
-          href={sound.url}
-          download
-          className="inline-flex items-center gap-1 text-xs bg-[#88b863] hover:bg-[#699944] text-white px-3 py-1.5 rounded-full transition"
-        >
-          <Download className="w-3.5 h-3.5" />
-          Descargar
-        </a>
-      </div>
     </article>
   );
 }

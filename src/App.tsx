@@ -18,7 +18,8 @@ import MeditationPage from "@/pages/Meditation/MeditationPage";
 import PoseDetail from "@/pages/Meditation/PoseDetail";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
-import { supabase } from "@/lib/database/supabaseClient"; // ✅ Asegúrate de importar esto
+import { supabase } from "@/lib/database/supabaseClient";
+import Favorites from "@/pages/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -29,29 +30,25 @@ function AppContent() {
 
   const location = useLocation();
   const hideNavbar = ["/login", "/register"].includes(location.pathname);
-
   const [showScreensaver, setShowScreensaver] = useState(false);
-
-  // ✅ Nuevo estado de usuario
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // 1️⃣ Obtener usuario activo
     const getUserSession = async () => {
       const { data } = await supabase.auth.getUser();
       if (data?.user) setUser(data.user);
     };
     getUserSession();
 
-    // 2️⃣ Escuchar cambios en la sesión
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
 
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  // 🧘 Protector de pantalla
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     const resetTimer = () => {
@@ -81,7 +78,6 @@ function AppContent() {
         </div>
       )}
 
-      {/* ✅ Navbar recibe el usuario */}
       {!hideNavbar && (
         <Navbar
           activeSection={activeSection}
@@ -115,6 +111,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <PoseDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <ProtectedRoute>
+              <Favorites />
             </ProtectedRoute>
           }
         />
