@@ -9,7 +9,6 @@ import {
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSession } from "@/hooks/useSession";
 import { supabase } from "@/lib/database/supabaseClient";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -18,17 +17,16 @@ type Section = "home" | "meditate" | "breathe";
 interface NavbarProps {
   activeSection: Section;
   setActiveSection: (s: Section) => void;
+  user?: any; // ✅ agregamos la prop de usuario
 }
 
 function classNames(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function Navbar({  }: NavbarProps) {
+export function Navbar({ activeSection, setActiveSection, user }: NavbarProps) {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const session = useSession();
-  const user = session?.user;
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -62,8 +60,6 @@ export function Navbar({  }: NavbarProps) {
             </span>
           </div>
 
-          {/* (El bloque de links se eliminó) */}
-
           {/* Botón de tema + perfil */}
           <div className="flex items-center gap-3">
             <button
@@ -85,13 +81,16 @@ export function Navbar({  }: NavbarProps) {
                   alt="avatar"
                   src={
                     user?.user_metadata?.avatar_url ||
+                    user?.avatar_url ||
                     "https://i.pravatar.cc/100?img=8"
                   }
                   className="size-8 rounded-full bg-gray-800 ring-1 ring-gray-200 dark:ring-white/10"
                 />
                 <div className="hidden sm:flex flex-col text-left">
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {user?.user_metadata?.full_name || ""}
+                    {user?.user_metadata?.first_name ||
+                      user?.user_metadata?.full_name ||
+                      "Usuario"}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]">
                     {user?.email || ""}
@@ -101,7 +100,9 @@ export function Navbar({  }: NavbarProps) {
 
               <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white/90 dark:bg-slate-800/90 py-1 shadow-lg ring-1 ring-black/5 backdrop-blur-md data-[closed]:scale-95 data-[closed]:opacity-0"
+                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white/90 
+                dark:bg-slate-800/90 py-1 shadow-lg ring-1 ring-black/5 backdrop-blur-md 
+                data-closed:scale-95 data-closed:opacity-0"
               >
                 {user ? (
                   <>

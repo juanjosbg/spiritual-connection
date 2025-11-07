@@ -138,7 +138,6 @@ export default function PoseDetail() {
 
       {/* Info inferior */}
       <section className="mt-10 grid lg:grid-cols-2 gap-10">
-        {/* Texto + botones */}
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
             <span className="text-[11px] px-3 py-1 bg-[#d9edcf] text-[#4e6b43] rounded-full w-fit uppercase tracking-widest">

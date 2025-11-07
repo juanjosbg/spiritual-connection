@@ -14,42 +14,62 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
-
 import MeditationPage from "@/pages/Meditation/MeditationPage";
 import PoseDetail from "@/pages/Meditation/PoseDetail";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
+import { supabase } from "@/lib/database/supabaseClient"; // ✅ Asegúrate de importar esto
+
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const [activeSection, setActiveSection] = useState< "home" | "meditate" | "breathe" >("home");
+  const [activeSection, setActiveSection] = useState<
+    "home" | "meditate" | "breathe"
+  >("home");
 
   const location = useLocation();
   const hideNavbar = ["/login", "/register"].includes(location.pathname);
 
   const [showScreensaver, setShowScreensaver] = useState(false);
 
+  // ✅ Nuevo estado de usuario
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // 1️⃣ Obtener usuario activo
+    const getUserSession = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUserSession();
+
+    // 2️⃣ Escuchar cambios en la sesión
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  // 🧘 Protector de pantalla
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
-
     const resetTimer = () => {
       setShowScreensaver(false);
       clearTimeout(timer);
       timer = setTimeout(() => setShowScreensaver(true), 20000);
     };
 
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-    window.addEventListener("click", resetTimer);
-    window.addEventListener("scroll", resetTimer);
+    ["mousemove", "keydown", "click", "scroll"].forEach((evt) =>
+      window.addEventListener(evt, resetTimer)
+    );
 
     resetTimer();
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      window.removeEventListener("click", resetTimer);
-      window.removeEventListener("scroll", resetTimer);
+      ["mousemove", "keydown", "click", "scroll"].forEach((evt) =>
+        window.removeEventListener(evt, resetTimer)
+      );
     };
   }, []);
 
@@ -61,10 +81,12 @@ function AppContent() {
         </div>
       )}
 
+      {/* ✅ Navbar recibe el usuario */}
       {!hideNavbar && (
         <Navbar
           activeSection={activeSection}
           setActiveSection={setActiveSection}
+          user={user}
         />
       )}
 
@@ -72,18 +94,30 @@ function AppContent() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-
-        {/* 🧘 Módulo de meditación */}
-        <Route path="/meditation" element={
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meditation"
+          element={
             <ProtectedRoute>
               <MeditationPage />
             </ProtectedRoute>
           }
         />
-        <Route path="/meditation/pose/:id" element={<PoseDetail />} />
-
-        {/* ❌ 404 */}
+        <Route
+          path="/meditation/pose/:id"
+          element={
+            <ProtectedRoute>
+              <PoseDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

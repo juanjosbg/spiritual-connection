@@ -1,12 +1,17 @@
 "use client";
-
 import { useState } from "react";
 import { Filter, Settings } from "lucide-react";
 import Swal from "sweetalert2";
 import { Card } from "@/components/ui/card";
 import ProfileSettingsDrawer from "@/components/Profile/ProfileSettingsDrawer";
 
-const subCategories = ["Mis rutinas", "Música", "Retos", "Logros"];
+const subCategories = [
+  "Sesiones guiadas",
+  "Respiración consciente",
+  "Yoga y posturas",
+  "Relajación sonora",
+  "Diario de gratitud",
+];
 
 export function MeditationSidebar({
   user,
@@ -15,6 +20,7 @@ export function MeditationSidebar({
   setDifficulty,
   duration,
   setDuration,
+  setActiveSection,
   className = "",
 }: any) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -31,7 +37,6 @@ export function MeditationSidebar({
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = e.target.value.toLowerCase();
-
     if (selected !== "all" && !unlockedLevels.includes(selected)) {
       Swal.fire({
         title: "🔒 Nivel bloqueado",
@@ -44,17 +49,17 @@ export function MeditationSidebar({
       });
       return;
     }
-
     setDifficulty(e.target.value);
   };
 
   return (
     <aside
-      className={classNames( "hidden md:flex w-[38vh] flex-col border-r bg-[#73946B] backdrop-blur-sm",
+      className={classNames(
+        "hidden md:flex w-[38vh] flex-col border-r bg-[#73946B] backdrop-blur-sm",
         className
       )}
     >
-      {/* 🔹 Perfil */}
+      {/* Perfil */}
       <div className="flex items-center gap-2 px-6 py-6">
         <Card className="border-none shadow-none bg-transparent">
           <div className="flex items-center gap-4">
@@ -63,14 +68,12 @@ export function MeditationSidebar({
                 <img
                   src={user?.user_metadata?.avatar_url || "/avatars/avatar9.png"}
                   alt="avatar"
-                  className="block w-20 h-20 rounded-full object-cover bg-gray-100 p-1 ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent"
+                  className="block w-20 h-20 rounded-full object-cover bg-gray-100 p-1 ring-2 ring-indigo-500 ring-offset-2"
                 />
               </div>
-
               <button
                 onClick={() => setSettingsOpen(true)}
                 className="absolute -bottom-1 right-1 bg-indigo-600 p-1.5 rounded-full text-white hover:bg-indigo-700 transition shadow-sm"
-                title="Editar perfil"
               >
                 <Settings size={14} />
               </button>
@@ -78,14 +81,10 @@ export function MeditationSidebar({
 
             <div className="text-left">
               <h1 className="text-lg font-semibold text-gray-100">
-                {user?.user_metadata?.first_name || "Usuario sin nombre"}
+                {user?.user_metadata?.first_name || "Usuario"}
               </h1>
-              <p className="text-sm text-gray-200">
-                {user?.email || "Correo no disponible"}
-              </p>
-              <span className="text-xs text-gray-300">
-                Nivel: {level || "Sin nivel"}
-              </span>
+              <p className="text-sm text-gray-200">{user?.email}</p>
+              <span className="text-xs text-gray-300">Nivel: {level}</span>
             </div>
           </div>
         </Card>
@@ -98,7 +97,7 @@ export function MeditationSidebar({
         />
       </div>
 
-      {/* 🔹 Filtros */}
+      {/* Filtros */}
       <div className="flex flex-col gap-4 px-6 py-6">
         <h2 className="text-lg font-semibold text-gray-200 flex items-center gap-2">
           <Filter className="w-4 h-4 text-gray-300" /> Filtros
@@ -127,13 +126,16 @@ export function MeditationSidebar({
         </select>
       </div>
 
+      {/* Secciones */}
       <nav className="flex-1 px-4 py-6 border-t border-[#617c5b]/20">
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {subCategories.map((item) => (
             <li
               key={item}
-              className="flex items-center gap-3 px-3 py-2 rounded-full text-gray-100 hover:bg-[#617c5b] hover:shadow-md cursor-pointer"
+              onClick={() => setActiveSection(item)}
+              className="flex items-center gap-3 px-4 py-2 rounded-full text-gray-100 hover:bg-[#6b8e63] hover:shadow-md cursor-pointer transition"
             >
+              <span className="w-2 h-2 bg-white rounded-full" />
               {item}
             </li>
           ))}
