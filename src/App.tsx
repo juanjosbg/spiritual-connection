@@ -14,11 +14,12 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
-
-// 🧘 Nuevo módulo de meditación
 import MeditationPage from "@/pages/Meditation/MeditationPage";
 import PoseDetail from "@/pages/Meditation/PoseDetail";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
+import { supabase } from "@/lib/database/supabaseClient";
+import Favorites from "@/pages/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -29,30 +30,43 @@ function AppContent() {
 
   const location = useLocation();
   const hideNavbar = ["/login", "/register"].includes(location.pathname);
-
   const [showScreensaver, setShowScreensaver] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUserSession = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUserSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
-
     const resetTimer = () => {
       setShowScreensaver(false);
       clearTimeout(timer);
       timer = setTimeout(() => setShowScreensaver(true), 20000);
     };
 
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-    window.addEventListener("click", resetTimer);
-    window.addEventListener("scroll", resetTimer);
+    ["mousemove", "keydown", "click", "scroll"].forEach((evt) =>
+      window.addEventListener(evt, resetTimer)
+    );
 
     resetTimer();
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      window.removeEventListener("click", resetTimer);
-      window.removeEventListener("scroll", resetTimer);
+      ["mousemove", "keydown", "click", "scroll"].forEach((evt) =>
+        window.removeEventListener(evt, resetTimer)
+      );
     };
   }, []);
 
@@ -68,6 +82,7 @@ function AppContent() {
         <Navbar
           activeSection={activeSection}
           setActiveSection={setActiveSection}
+          user={user}
         />
       )}
 
@@ -75,18 +90,38 @@ function AppContent() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-
-        {/* 🧘 Módulo de meditación */}
-        <Route path="/meditation" element={
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meditation"
+          element={
             <ProtectedRoute>
               <MeditationPage />
             </ProtectedRoute>
           }
         />
-        <Route path="/meditation/pose/:id" element={<PoseDetail />} />
-
-        {/* ❌ 404 */}
+        <Route
+          path="/meditation/pose/:id"
+          element={
+            <ProtectedRoute>
+              <PoseDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <ProtectedRoute>
+              <Favorites />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

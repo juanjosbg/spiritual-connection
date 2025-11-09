@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/database/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SimilarCompaniesCarousel from "@/components/Profile/SimilarCompaniesCarousel";
+import { DashBoard } from "@/components/dashboard/DashBoard";
+import SidebarProfile from "@/components/layout/SidebarProfile";
+import { logUserActivity } from "@/lib/database/logActivity";
+import UserProgress from "@/components/challenges/UserProgress";
 
 const subCategories = [
   { name: "Dashboard", href: "#" },
@@ -13,12 +17,11 @@ const subCategories = [
   { name: "Stock Quotes", href: "#" },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
+  const [level, setLevel] = useState<string>("Beginner");
+  const [xp, setXp] = useState<number>(5);
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -26,69 +29,73 @@ export default function Dashboard() {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
+
+      if (user) {
+        const { data } = await supabase
+          .from("user_levels")
+          .select("level, xp")
+          .eq("user_id", user.id)
+          .single();
+
+        if (data) {
+          setLevel(data.level || "Beginner");
+          setXp(data.xp || 0);
+        }
+      }
     };
     getUserData();
   }, []);
 
+  useEffect(() => {
+    setProgress(Math.min((xp / 100) * 100, 100));
+  }, [xp]);
+
+  useEffect(() => {
+    logUserActivity();
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel("user_levels_updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "user_levels",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          setXp(payload.new.xp);
+          setLevel(payload.new.level);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   return (
     <div className="relative min-h-screen">
       <div className="flex min-h-screen mt-12">
-        <aside className="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
-          <div className="flex items-center gap-2 px-6 py-6 border-b border-gray-100 dark:border-gray-700">
-            <Card className="border-none shadow-none bg-transparent">
-              <div className="flex items-start gap-6">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-400 to-emerald-400 p-1">
-                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-xl font-bold text-indigo-600">
-                    {user?.user_metadata?.first_name
-                      ? user.user_metadata.first_name.charAt(0).toUpperCase()
-                      : "?"}
-                  </div>
-                </div>
-
-                <div>
-                  <h1 className="text-xl font-bold uppercase text-gray-100">
-                    {user?.user_metadata?.first_name
-                      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ""
-                      }`
-                      : "Usuario sin nombre"}
-                  </h1>
-                  <p className="mb-1 text-sm text-indigo-300">
-                    {user?.email || "Correo no disponible"}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          <nav className="flex-1 px-4 py-6">
-            <ul className="space-y-2">
-              {subCategories.map((item) => (
-                <li
-                  key={item.name}
-                  className={classNames(
-                    "flex items-center gap-3 px-3 py-2 rounded-md text-white hover:bg-gray-400 cursor-pointer"
-                  )}
-                >
-                  {item.name}
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
+        <SidebarProfile user={user} subCategories={subCategories} />
 
         <main className="flex-1 pt-20 p-6 md:p-10 transition-all">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                Electronic Arts
+              <h1 className="text-2xl font-semibold text-gray-800 uppercase mb-1">
+                Profile
               </h1>
-              <p className="text-sm text-gray-800 dark:text-gray-200">
+              <p className="text-sm text-gray-800 dark:text-gray-600">
                 American video game company
               </p>
             </div>
 
             <div className="flex items-center gap-6">
-              {/* Parte del search */}
               <div className="bg-white/80 dark:bg-gray-800/60 rounded-xl px-6 py-3 shadow-sm border border-gray-100 dark:border-gray-700">
                 <p className="text-xl text-gray-500 dark:text-gray-200">
                   All Time Profit
@@ -98,66 +105,68 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Electronic Arts - Your Watchlist */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <Card className="bg-white/90 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
-              <CardHeader className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-                <CardTitle>Electronic Arts</CardTitle>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                  88.10 USD
-                  <span className="text-emerald-500 ml-2 font-semibold">
-                    +5.23%
-                  </span>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center text-gray-400">
-                  (Chart preview)
-                </div>
-              </CardContent>
+            <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm col-span-2 border-none">
+              <DashBoard />
             </Card>
 
-            <Card className="bg-white/90 dark:bg-gray-800/70 border-none rounded-2xl shadow-sm backdrop-blur-sm">
-              <CardHeader className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
-                <CardTitle>Your Watchlist</CardTitle>
-                <a href="#" className="text-sm text-indigo-500">
-                  View All
-                </a>
+            <Card className="bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none">
+              <CardHeader className="flex flex-row justify-between mx-4 items-center border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-gray-600" />
+                  <CardTitle className="uppercase text-lg">
+                    Mi progreso
+                  </CardTitle>
+                </div>
+                <span className="text-xs text-gray-700 font-medium">
+                  Nivel actual: {level}
+                </span>
               </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                {[
-                  {
-                    name: "Netflix",
-                    value: "+0.31%",
-                    color: "text-emerald-500",
-                  },
-                  {
-                    name: "CD Projekt",
-                    value: "-1.65%",
-                    color: "text-red-500",
-                  },
-                  {
-                    name: "Square Enix",
-                    value: "+2.25%",
-                    color: "text-emerald-500",
-                  },
-                  { name: "Apple", value: "+0.53%", color: "text-emerald-500" },
-                ].map((item) => (
-                  <div
-                    key={item.name}
-                    className="flex justify-between items-center text-sm"
-                  >
-                    <span>{item.name}</span>
-                    <span className={`font-semibold ${item.color}`}>
-                      {item.value}
-                    </span>
+
+              <CardContent className="p-6 space-y-4 bg-white shadow-md my-4 mx-4 rounded-2xl">
+                <div>
+                  <p className="text-sm text-gray-900 mb-2">
+                    Experiencia acumulada
+                  </p>
+
+                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-1">
+                    <div
+                      className="h-2 bg-indigo-500 rounded-full transition-all duration-500"
+                      style={{ width: `${progress}%` }}
+                    ></div>
                   </div>
-                ))}
+
+                  <p className="text-xs mt-2 text-gray-900 font-medium">
+                    {xp}/100 XP{" "}
+                    {progress === 100 && (
+                      <span className="animate-bounce text-yellow-500 font-bold">
+                        🎉 Nivel completado
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-4">
+                  <div>
+                    <p className="font-medium text-indigo-400">
+                      Siguiente nivel
+                    </p>
+                    <p className="text-xs text-gray-900 font-medium">100 XP</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-indigo-500">Recompensa</p>
+                    <p className="text-xs text-gray-900 font-medium">
+                      🏅 Medalla “Mindful Explorer”
+                    </p>
+                  </div>
+                </div>
               </CardContent>
+
+              <UserProgress user={user} />
             </Card>
           </div>
 
-          {/* Cards */}
+          {/* Carrusel inferior */}
           <section className="mt-10">
             <SimilarCompaniesCarousel
               items={[
@@ -172,6 +181,7 @@ export default function Dashboard() {
             />
           </section>
 
+          {/* Sección final */}
           <section className="mt-10">
             <Card className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-100 rounded-2xl shadow-none flex justify-between items-center p-6">
               <div>

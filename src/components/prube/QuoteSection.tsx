@@ -111,7 +111,7 @@ export const QuoteSection = () => {
         )}
       </Card>
 
-      <Card className="p-6 col-span-2 rounded-2xl text-center bg-white backdrop-blur-md border-0">
+      <Card className="p-6 col-span-2 rounded-2xl text-center">
         <DashBoard />
       </Card>
 

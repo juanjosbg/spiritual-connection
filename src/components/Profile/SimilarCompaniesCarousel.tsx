@@ -89,10 +89,10 @@ export default function SimilarCompaniesCarousel({
             className={`rounded-full p-2 border transition
               ${
                 canPrev
-                  ? "bg-white/80 hover:bg-white shadow-sm"
+                  ? "bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none"
                   : "opacity-40 cursor-not-allowed"
               }
-              dark:bg-gray-800/70 dark:hover:bg-gray-800 dark:border-gray-700`}
+              bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none`}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -103,18 +103,18 @@ export default function SimilarCompaniesCarousel({
             className={`rounded-full p-2 border transition
               ${
                 canNext
-                  ? "bg-white/80 hover:bg-white shadow-sm"
+                  ? "bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none"
                   : "opacity-40 cursor-not-allowed"
               }
-              dark:bg-gray-800/70 dark:hover:bg-gray-800 dark:border-gray-700`}
+              bg-white backdrop-blur-sm rounded-2xl shadow-sm border-none`}
           >
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-gray-50 to-transparent dark:from-[#111827]" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-gray-50 to-transparent dark:from-[#111827]" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-5 bg-linear-to-r from-gray-40 to-transparent dark:from-[#111827]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-linear-to-l from-gray-40 to-transparent dark:from-[#111827]" />
 
       <div
         ref={viewportRef}
@@ -129,7 +129,7 @@ export default function SimilarCompaniesCarousel({
             <article
               key={`${c.name}-${idx}`}
               className="snap-start shrink-0 w-[70%] sm:w-[42%] md:w-[30%] lg:w-[22%]
-                         bg-white/90 dark:bg-gray-800/70 p-4 rounded-xl text-center
+                         bg-white backdrop-blur-sm border-none p-4 rounded-xl text-center -z-1
                          shadow-sm border border-white/40 dark:border-gray-700
                          transition-transform duration-300 hover:-translate-y-1
                          hover:shadow-xl hover:shadow-indigo-500/10"
