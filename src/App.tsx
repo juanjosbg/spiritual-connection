@@ -2,24 +2,27 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TooltipProvider } from "./components/ui/tooltip";
-import { Toaster } from "./components/ui/toaster";
-import { Toaster as Sonner } from "./components/ui/sonner";
+
+import { supabase } from "@/lib/database/supabaseClient";
 
 import { Navbar } from "@/components/Navbar";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import MeditationScene from "@/components/screensaver/MeditationScene";
 
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
+import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
-import MeditationPage from "@/pages/Meditation/MeditationPage";
-import PoseDetail from "@/pages/Meditation/PoseDetail";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-
-import { supabase } from "@/lib/database/supabaseClient";
 import Favorites from "@/pages/Favorites";
+import PoseDetail from "@/pages/Meditation/PoseDetail";
+import EjercisePage from "@/pages/Ejerice/EjercicePage";
+import NutritionPage from "@/pages/Nutrition/NutritionPage";
+import MeditationPage from "@/pages/Meditation/MeditationPage";
+import ExerciseDetail from "./pages/Ejerice/ExerciseDetail";
 
 const queryClient = new QueryClient();
 
@@ -122,6 +125,26 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/nutrition"
+          element={
+            <ProtectedRoute>
+              <NutritionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/exercise"
+          element={
+            <ProtectedRoute>
+              <EjercisePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/exercise/:name" element={<ExerciseDetail />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

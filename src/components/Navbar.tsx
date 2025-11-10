@@ -17,7 +17,7 @@ type Section = "home" | "meditate" | "breathe";
 interface NavbarProps {
   activeSection: Section;
   setActiveSection: (s: Section) => void;
-  user?: any; // ✅ agregamos la prop de usuario
+  user?: any;
 }
 
 function classNames(...classes: Array<string | false | null | undefined>) {
@@ -42,8 +42,8 @@ export function Navbar({ activeSection, setActiveSection, user }: NavbarProps) {
         "fixed top-0 z-50 w-full backdrop-blur-md transition-all duration-300 border-b border-transparent",
         scrolled
           ? theme === "dark"
-            ? "bg-[#f6f7f9]/90"
-            : "bg-[#111827]/90"
+            ? "bg-[#0f172a]/90" // Fondo oscuro cuando el tema es oscuro
+            : "bg-[#f4eae0]/90" // Fondo claro cuando el tema es claro
           : "bg-transparent border-transparent"
       )}
     >
@@ -55,7 +55,7 @@ export function Navbar({ activeSection, setActiveSection, user }: NavbarProps) {
             onClick={() => navigate("/")}
           >
             <Sparkles className="w-6 h-6 text-indigo-500" />
-            <span className="text-xl font-semibold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="text-xl font-semibold bg-linear-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
               Spiritual Connection
             </span>
           </div>
@@ -69,9 +69,9 @@ export function Navbar({ activeSection, setActiveSection, user }: NavbarProps) {
               aria-label="Cambiar tema"
             >
               {theme === "dark" ? (
-                <SunIcon className="size-5 text-gray-200" />
+                <SunIcon className="w-5 h-5 text-yellow-400" />
               ) : (
-                <MoonIcon className="size-5 text-gray-700" />
+                <MoonIcon className="w-5 h-5 text-gray-700" />
               )}
             </button>
 
@@ -84,7 +84,7 @@ export function Navbar({ activeSection, setActiveSection, user }: NavbarProps) {
                     user?.avatar_url ||
                     "https://i.pravatar.cc/100?img=8"
                   }
-                  className="size-8 rounded-full bg-gray-800 ring-1 ring-gray-200 dark:ring-white/10"
+                  className="w-8 h-8 rounded-full bg-gray-800 ring-1 ring-gray-200 dark:ring-white/10"
                 />
                 <div className="hidden sm:flex flex-col text-left">
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">

@@ -13,8 +13,6 @@ export default {
       },
     },
     extend: {
-      colors: {
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
