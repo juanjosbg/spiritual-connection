@@ -19,10 +19,11 @@ import Register from "@/pages/Register";
 import NotFound from "@/pages/NotFound";
 import Favorites from "@/pages/Favorites";
 import PoseDetail from "@/pages/Meditation/PoseDetail";
-import EjercisePage from "@/pages/Ejerice/EjercicePage";
+import EjercicePage from "@/pages/Ejerice/EjercicePage";
+import ExerciseDetail from "@/components/exercise/ExerciseDetailDB";
 import NutritionPage from "@/pages/Nutrition/NutritionPage";
 import MeditationPage from "@/pages/Meditation/MeditationPage";
-import ExerciseDetail from "./pages/Ejerice/ExerciseDetail";
+import ExerciseDetailDB from "@/pages/Ejerice/ExerciseDetailDB";
 
 const queryClient = new QueryClient();
 
@@ -135,14 +136,9 @@ function AppContent() {
           }
         />
 
-        <Route
-          path="/exercise"
-          element={
-            <ProtectedRoute>
-              <EjercisePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/exercise" element={<EjercicePage />} />
+        <Route path="/exercise/:id" element={<ExerciseDetailDB />} />
+
         <Route path="/exercise/:name" element={<ExerciseDetail />} />
 
         <Route path="*" element={<NotFound />} />
