@@ -32,6 +32,7 @@ const Index = () => {
           <div className="relative lg:w-1/2 lg:ml-auto p-6 md:p-12 space-y-6 bg-white/80 backdrop-blur-md rounded-2xl">
             <h1 className="text-4xl md:text-5xl font-light leading-tight text-gray-800">
               Mindful Space <br />
+              
               That Revives <span className="font-semibold text-[#88b863]">Soul</span>
             </h1>
 
@@ -82,8 +83,8 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4 w-full px-6">
             {[
               { id: "meditation", title: "Meditation", icon: <Flower2 className="w-8 h-8" />, link: "/meditation" },
-              { id: "nutrition", title: "Nutrition", icon: <Leaf className="w-8 h-8" /> },
-              { id: "exercise", title: "Exercise", icon: <Dumbbell className="w-8 h-8" /> },
+              { id: "nutrition", title: "Nutrition", icon: <Leaf className="w-8 h-8" />, link: "/nutrition" },
+              { id: "exercise", title: "Exercise", icon: <Dumbbell className="w-8 h-8" />, link: "/exercise" },
               { id: "spirituality", title: "Spirituality", icon: <Heart className="w-8 h-8" /> },
               { id: "awareness", title: "Awareness", icon: <Eye className="w-8 h-8" /> },
               { id: "soul", title: "Soul", icon: <Star className="w-8 h-8" /> },

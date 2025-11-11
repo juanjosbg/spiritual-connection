@@ -46,8 +46,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f9fafb] to-[#dbeafe] dark:from-[#0b0f19] dark:to-[#1e293b] text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      {/* 🌈 Navbar */}
+    <div className="min-h-screen bg-linear-to-br from-[#f9fafb] to-[#dbeafe] dark:from-[#0b0f19] dark:to-[#1e293b] text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
 
       {/* Contenedor principal */}

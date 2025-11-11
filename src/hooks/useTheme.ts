@@ -13,10 +13,10 @@ export function useTheme() {
 
     if (theme === "dark") {
       root.classList.add("dark");
-      root.style.backgroundColor = "#D4DCCD";
+      root.style.backgroundColor = "#111827";
     } else {
       root.classList.remove("dark");
-      root.style.backgroundColor = "#111827";
+      root.style.backgroundColor = "#D4DCCD";
     }
 
     localStorage.setItem("theme", theme);
