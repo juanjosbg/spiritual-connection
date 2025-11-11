@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/database/supabaseClient";
 import { fetchAllPoses, type Pose } from "@/lib/meditation/yogaApi";
 import { QuizMeditation } from "@/components/meditation/QuizMeditation";
-import { MeditationSidebar } from "./MeditationSidebar";
 import { MeditationContent } from "./MeditationContent";
 import { MeditationEmptyState } from "@/pages/Meditation/MeditationEmptyState";
+import MeditationSelector from "@/components/meditation/MeditationSelector";
 import MeditationSounds from "@/components/meditation/MeditationSounds/MeditationSounds";
-import { Bell } from "lucide-react";
-import ChallengesDrawer from "@/components/challenges/ChallengesDrawer";
 import GratitudeJournal from "@/components/meditation/GratitudeJournal";
+import { MeditationSidebar } from "./MeditationSidebar";
+import LoadInfoMeditation from "@/components/load/loadInfoMeditation";
 
 export default function MeditationPage() {
   const [user, setUser] = useState<any>(null);
@@ -19,8 +19,8 @@ export default function MeditationPage() {
   const [difficulty, setDifficulty] = useState("All");
   const [duration, setDuration] = useState("All");
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState("Yoga y posturas");
-  const [openChallenges, setOpenChallenges] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -38,16 +38,14 @@ export default function MeditationPage() {
         if (data) setLevel(data.level);
       }
     };
-    getUserData();
-  }, []);
 
-  useEffect(() => {
-    fetchAllPoses()
-      .then((data) => {
-        setPoses(data);
-        setFiltered(data);
-      })
-      .finally(() => setLoading(false));
+    getUserData();
+
+    fetchAllPoses().then((data) => {
+      setPoses(data);
+      setFiltered(data);
+      setLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -63,16 +61,26 @@ export default function MeditationPage() {
     setFiltered(temp);
   }, [difficulty, duration, poses]);
 
+  useEffect(() => {
+    if (selectedMode) {
+      setShowLoader(true);
+      const timer = setTimeout(() => setShowLoader(false), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedMode, level]);
+
   if (loading)
-    return (
-      <div className="p-10 text-center text-gray-400">
-        🧘 Cargando tus rutinas...
-      </div>
-    );
+    return <div className="p-10 text-center text-gray-400">🧘 Cargando...</div>;
 
   if (!user) return <MeditationEmptyState />;
-  if (!level) return <QuizMeditation userId={user.id} onComplete={setLevel} />;
 
+  if (!selectedMode)
+    return <MeditationSelector onSelect={(mode) => setSelectedMode(mode)} />;
+
+  // 🔹 Loader general para todos los modos
+  if (showLoader) return <LoadInfoMeditation />;
+
+  // 🔹 Interfaz principal (igual que antes)
   return (
     <div className="relative min-h-screen flex mt-12">
       <MeditationSidebar
@@ -82,42 +90,26 @@ export default function MeditationPage() {
         setDifficulty={setDifficulty}
         duration={duration}
         setDuration={setDuration}
-        setActiveSection={setActiveSection}
+        setActiveSection={setSelectedMode}
       />
 
-      <div className="flex-1 space-y-10 p-4 md:p-10 relative">
-        <button
-          onClick={() => setOpenChallenges(true)}
-          className="fixed top-20 right-6 z-20 flex items-center gap-2 bg-[#88b863] hover:bg-[#699944] text-white px-4 py-2 rounded-full shadow-md transition"
-        >
-          <Bell size={18} />
-          Retos diarios
-        </button>
-
-        <ChallengesDrawer open={openChallenges} setOpen={setOpenChallenges} />
-
-        {activeSection === "Yoga y posturas" && (
-          <MeditationContent user={user} level={level} filtered={filtered} />
+      <div className="flex-1 space-y-10 p-4 md:p-10 relative transition-all">
+        {selectedMode === "yoga" && (
+          !level ? (
+            <QuizMeditation userId={user.id} onComplete={setLevel} />
+          ) : (
+            <MeditationContent user={user} level={level} filtered={filtered} />
+          )
         )}
 
-        {activeSection === "Relajación sonora" && (
-          <MeditationSounds defaultQuery="rain" />
-        )}
+        {selectedMode === "music" && <MeditationSounds defaultQuery="rain" />}
 
-        {activeSection === "Sesiones guiadas" && (
+        {selectedMode === "journal" && <GratitudeJournal />}
+
+        {selectedMode === "breathing" && (
           <div className="p-8 bg-white rounded-xl text-center text-gray-600 shadow">
-            ✨ Muy pronto podrás acceder a sesiones guiadas personalizadas.
+            🌬️ Ejercicios de respiración próximamente.
           </div>
-        )}
-
-        {activeSection === "Respiración consciente" && (
-          <div className="p-8 bg-white rounded-xl text-center text-gray-600 shadow">
-            🌬️ Pronto podrás practicar ejercicios de respiración consciente.
-          </div>
-        )}
-
-        {activeSection === "Diario de gratitud" && (
-          <GratitudeJournal />
         )}
       </div>
     </div>
